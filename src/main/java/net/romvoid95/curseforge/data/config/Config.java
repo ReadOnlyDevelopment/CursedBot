@@ -5,14 +5,14 @@ import java.util.Objects;
 
 public class Config {
 
-	private String token;
-	private Boolean debug;
-	private String defaultChannel;
-	private String defulatRole;
-	private FileLink updateFileLink;
-	private String defaultDescription;
-	private String discordFormat;
-	private Integer[] projects;
+	private String token = "INSERT-TOKEN";
+	private Boolean debug = false;
+	private String defaultChannel = "SET ID";
+	private String defulatRole = "none";
+	private FileLink updateFileLink = FileLink.DEFAULT;
+	private String defaultDescription = "New File Detected For CurseForge Project";
+	private String discordFormat = "css";
+	private Integer[] projects = new Integer[] {123456,987654};
 
 	public Config() {}
 	

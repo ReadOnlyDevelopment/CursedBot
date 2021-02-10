@@ -1,9 +1,9 @@
 package net.romvoid95.curseforge.data;
 
-import net.rom.utility.data.JsonDataManager;
 import net.romvoid95.curseforge.data.cache.Cache;
 import net.romvoid95.curseforge.data.config.Config;
 import net.romvoid95.curseforge.data.override.OverrideList;
+import net.romvoid95.curseforge.manager.JsonDataManager;
 
 public class Data {
 	

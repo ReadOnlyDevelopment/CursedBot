@@ -17,17 +17,18 @@ import com.therandomlabs.curseapi.project.CurseProject;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.rom.utility.data.JsonDataManager;
 import net.romvoid95.curseforge.data.Data;
 import net.romvoid95.curseforge.data.Patterns;
 import net.romvoid95.curseforge.data.cache.Cache;
 import net.romvoid95.curseforge.data.cache.ProjectData;
 import net.romvoid95.curseforge.data.override.ProjectOverride;
+import net.romvoid95.curseforge.manager.JsonDataManager;
 
 public class DataInterface {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DataInterface.class);
 	private static File lockFile = new File("cache/cacheLock");
+	private static File config = new File("config.json");
 	private static JsonDataManager<Cache> cache = Data.cache();
 	private static List<Integer> projectList;
 	
@@ -38,7 +39,7 @@ public class DataInterface {
 	public static void setProjectList(List<Integer> projectList) {
 		DataInterface.projectList = projectList;
 	}
-	
+
 	public static void updateFileId(ProjectData projectData) {
 		List<ProjectData> list = cache.get().getCache();
 		for(ProjectData d : list) {

@@ -4,7 +4,7 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
-version = '1.2.3'
+version = '1.0.0'
 group = "net.romvoid95.curseforge" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 mainClassName = 'net.romvoid95.curseforge.CurseForgeBot'
 

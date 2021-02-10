@@ -32,7 +32,7 @@ public class Embed {
 	public static EmbedBuilder curseLinkEmbed(CurseProject proj, CurseFile file, TextChannel channel, String desc, String syntax) throws CurseException {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(proj.name(), proj.url().toString());
-        //embed.setThumbnail(proj.logo().thumbnailURL().toString());
+        embed.setThumbnail(proj.logo().thumbnailURL().toString());
         embed.setDescription(desc);
         embed.addField(getFieldCurseLink(proj, file));
         embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
