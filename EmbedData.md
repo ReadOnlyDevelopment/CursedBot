@@ -21,5 +21,7 @@ Since the EmbedData values in `config.json` are easily distinguished as "default
 `"channel"` is pretty self explanatory. It's the channel the Update Post for this project will be sent too
   
  `"role"` if a valid role ID is provided will ping this role on this particular update
- 
- 	- ![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/role-ping.png)
+
+ 	- Example 
+
+ 	![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/role-ping.png)
