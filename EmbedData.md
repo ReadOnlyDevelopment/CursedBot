@@ -18,7 +18,7 @@ Since the EmbedData values in `config.json` are easily distinguished as "default
 **What Each Value Changes**
 ---
 
-  - `"channel"` is pretty self explanatory. It's the channel the Update Post for this project will be sent too
+`"channel"` is pretty self explanatory. It's the channel the Update Post for this project will be sent too
   
-  - `"role"` if a valid role ID is provided will ping this role on this particular update
-    - 
+ `"role"` if a valid role ID is provided will ping this role on this particular update
+ 
