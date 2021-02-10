@@ -21,7 +21,7 @@ A major change from the original is the Update thread is now ran as a Asyncronou
       - Embed Description
         - A short sentence right under the Update Post title
         
-**To See what each EmbedData value changes please check out [EmbedData Values](https://github.com/ReadOnlyDevelopment/CursedBot/edit/master/EmbedData.md)**
+**To See what each EmbedData value changes please check out [EmbedData Values](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/EmbedData.md)**
 
   - IMPORTANT NOTE
     - For now changing any values in `config.json` or `overrides/list.json` will require a restart.
