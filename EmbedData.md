@@ -18,16 +18,16 @@ Since the EmbedData values in `config.json` are easily distinguished as "default
 **What Each Value Changes**
 ---
 
--> `channel` is pretty self explanatory. It's the channel the Update Post for this project will be sent too
+-> `"channel"` is pretty self explanatory. It's the channel the Update Post for this project will be sent too
 
 
--> `role` if a valid role ID is provided will ping this role on this particular update
+-> `"role"` if a valid role ID is provided will ping this role on this particular update
 
 ![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/role-ping.png)
 
 ---
 
--> `fileLink` This can be 1 of 3 values `default | curseforge | direct`
+-> `"fileLink"` This can be 1 of 3 values `default | curseforge | direct`
 
 
 **if project is a Mod**
@@ -44,8 +44,26 @@ Example: `direct`
 **if project is a Modpack**
 
 The values stil produce the same result. However with modpacks, if the update contains a `server file` download, this is included
-and is always a direct download link regardless of `fuleLink` value
+and is always a direct download link regardless of `fileLink` value
 
 Example:
 
 ![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/modpack-serverfiles.png)
+
+---
+
+-> `"description"` This can override the default embed descrption set in `config.json`
+
+Example: `"description" : "This overrides the default embed description",`
+
+![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/desc.png)
+
+---
+
+-> `"discordFormat"` This gives the changelog content discord syntax highlighting
+
+NOTE: The highlighting is only applied if the changelog content is properly formatted for the provided language
+
+Example: `"discordFormat" : "yml"`
+
+![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/yml.png)
