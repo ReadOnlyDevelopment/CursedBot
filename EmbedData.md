@@ -25,9 +25,10 @@ Since the EmbedData values in `config.json` are easily distinguished as "default
 
 ![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/role-ping.png)
 
+---
+
 -> `fileLink` This can be 1 of 3 values `default | curseforge | direct`
 
----
 
 **if project is a Mod**
 
@@ -39,7 +40,6 @@ Example: `direct`
 
 ![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/filelink-direct.png)
 
----
 
 **if project is a Modpack**
 
