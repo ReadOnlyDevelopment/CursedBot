@@ -24,3 +24,22 @@ Since the EmbedData values in `config.json` are easily distinguished as "default
 -> `role` if a valid role ID is provided will ping this role on this particular update
 
 ![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/role-ping.png)
+
+-> `fileLink` This can be 1 of 3 values `default | curseforge | direct`
+
+**if project is a Mod**
+Example: `curseforge`
+
+![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/filelink-curseforge.png)
+
+Example: `direct`
+
+![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/filelink-direct.png)
+
+**if project is a Modpack**
+The values stil produce the same result. However with modpacks, if the update contains a `server file` download, this is included
+and is always a direct download link regardless of `fuleLink` value
+
+Example:
+
+![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/modpack-serverfiles.png)
