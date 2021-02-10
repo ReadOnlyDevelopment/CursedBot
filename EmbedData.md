@@ -23,6 +23,4 @@ Since the EmbedData values in `config.json` are easily distinguished as "default
 
 `role` if a valid role ID is provided will ping this role on this particular update
 
- 	- Example 
-
- 	![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/role-ping.png)
+![](https://github.com/ReadOnlyDevelopment/CursedBot/blob/master/assets/role-ping.png)
