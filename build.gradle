@@ -1,0 +1,42 @@
+plugins {
+	id 'java'
+	id 'application'
+	id "com.github.johnrengelman.shadow" version "6.0.0"
+}
+
+version = '1.2.3'
+group = "net.romvoid95.curseforge" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+mainClassName = 'net.romvoid95.curseforge.CurseForgeBot'
+
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+    jcenter()
+	maven { url 'https://maven.romvoid.dev' }
+}
+
+dependencies {
+	compile('net.dv8tion:JDA:4.2.0_227'){
+		transitive = true
+		exclude module: 'opus-java'
+	}
+	compile("com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"){
+		transitive = true
+		exclude module: 'slf4j-api'
+	}
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	compile group: 'com.typesafe', name: 'config', version: '1.4.1'
+	compile 'es.nitaur.markdown:txtmark:0.16'
+	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	compile 'net.rom.utility:JavaUtilities:2.0.4'
+}
+
+jar {
+	manifest {
+		attributes(
+				'Main-Class': mainClassName
+				)
+	}
+}
