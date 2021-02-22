@@ -30,7 +30,7 @@ dependencies {
 	compile group: 'com.typesafe', name: 'config', version: '1.4.1'
 	compile 'es.nitaur.markdown:txtmark:0.16'
 	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
-	compile 'net.rom.utility:JavaUtilities:2.0.4'
+	compile 'net.rom.utility:JavaUtilities:3.0.0'
 }
 
 jar {
