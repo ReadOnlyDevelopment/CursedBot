@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
 
-	implementation 'org.apache.maven:apache-maven:3.8.1'
+	implementation 'org.apache.maven:apache-maven:3.8.2'
 
 	implementation('net.dv8tion:JDA:4.3.0_324'){
 		exclude module: 'opus-java'
