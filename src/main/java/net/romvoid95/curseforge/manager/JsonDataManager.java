@@ -15,12 +15,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.eventbus.Subscribe;
 
-import net.rom.utility.io.FileIO;
+import net.romvoid95.curseforge.io.FileIO;
 
 public class JsonDataManager<T> implements DataManager<T> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JsonDataManager.class);
+	private static final Logger LOG = (Logger) LoggerFactory.getLogger(JsonDataManager.class);
 
 	private static final ObjectMapper mapper = new ObjectMapper()
 			.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true) // Allow newlines.
@@ -58,6 +59,7 @@ public class JsonDataManager<T> implements DataManager<T> {
 		return data;
 	}
 
+	@Subscribe
 	@Override
 	public void save() {
 		try {

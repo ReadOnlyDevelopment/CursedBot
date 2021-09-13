@@ -1,6 +1,8 @@
 package net.romvoid95.curseforge.async;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.github.rjeschke.txtmark.Processor;
@@ -11,13 +13,14 @@ import com.therandomlabs.curseapi.project.CurseProject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.Component;
 
 public class Embed {
-
 	public static EmbedBuilder noLinkEmbed(CurseProject proj, CurseFile file, TextChannel channel, String desc, String syntax) throws CurseException {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(proj.name(), proj.url().toString());
-        embed.setThumbnail(proj.logo().thumbnailURL().toString());
+        //embed.setThumbnail(proj.logo().thumbnailURL().toString());
         embed.setDescription(desc);
         embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
                 "**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
@@ -32,59 +35,65 @@ public class Embed {
 	public static EmbedBuilder curseLinkEmbed(CurseProject proj, CurseFile file, TextChannel channel, String desc, String syntax) throws CurseException {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(proj.name(), proj.url().toString());
-        embed.setThumbnail(proj.logo().thumbnailURL().toString());
+        //embed.setThumbnail(proj.logo().thumbnailURL().toString());
         embed.setDescription(desc);
-        embed.addField(getFieldCurseLink(proj, file));
+        embed.addField(getField(proj, file));
         embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
                 "**Changelog:** \n```" + syntax + "\n" + formatChangelog(file) + "\n```",
                 false);
         return embed;
-	}
-	
-	private static Field getFieldCurseLink(CurseProject project, CurseFile file) throws CurseException {
-		Field newField;
-		if(project.categorySection().name().equalsIgnoreCase("modpacks") && file.hasAlternateFile()) {
-			newField = new Field(EmbedBuilder.ZERO_WIDTH_SPACE,
-					"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-                    + "`" + "\n **Category**: `" + project.categorySection().name() + "`" + "\n **GameVersion**: `"
-                    + getGameVersions(project) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(project) + ")"
-                    + "\n **Server Files Download Link**: " + "[Download](" + getAltUrl(project)+ ")", false);
-		} else {
-			newField = new Field(EmbedBuilder.ZERO_WIDTH_SPACE,
-	                "**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-                    + "`" + "\n **Category**: `" + project.categorySection().name() + "`" + "\n **GameVersion**: `"
-                    + getGameVersions(project) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(project) + ")",
-            false);
-		}
-		return newField;
 	}
 	
 	public static EmbedBuilder directLinkEmbed(CurseProject proj, CurseFile file, TextChannel channel, String desc, String syntax) throws CurseException {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(proj.name(), proj.url().toString());
-        embed.setThumbnail(proj.logo().thumbnailURL().toString());
+        //embed.setThumbnail(proj.logo().thumbnailURL().toString());
         embed.setDescription(desc);
-        embed.addField(getFieldDirectLink(proj, file));
+        embed.addField(getField(proj, file));
         embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
                 "**Changelog:** \n```" + syntax + "\n" + formatChangelog(file) + "\n```",
                 false);
         return embed;
 	}
 	
-	private static Field getFieldDirectLink(CurseProject project, CurseFile file) throws CurseException {
+	public static List<Component> getCursePageButtons(CurseProject proj) throws CurseException {
+		List<Component> components = new ArrayList<>();
+		if(proj.categorySection().name().equalsIgnoreCase("modpacks")) {
+			components.add(Button.link(getUrl(proj), "Webpage Link"));
+			if(proj.files().first().hasAlternateFile()) {
+				components.add(Button.link(proj.files().first().alternateFile().downloadURL().toString(), "Download Server File"));
+			}
+		} else {
+			components.add(Button.link(getUrl(proj), "Download"));
+		}
+		return components;
+	}
+	
+	public static List<Component> getDirectDownloadButtons(CurseProject proj, CurseFile file) throws CurseException {
+		List<Component> components = new ArrayList<>();
+		if(proj.categorySection().name().equalsIgnoreCase("modpacks")) {
+			components.add(Button.link(file.downloadURL().toString(), "Download Pack"));
+			if(file.hasAlternateFile()) {
+				components.add(Button.link(file.alternateFile().downloadURL().toString(), "Download Server File"));
+			}
+		} else {
+			components.add(Button.link(file.downloadURL().toString(), "Download"));
+		}
+		return components;
+	}
+	
+	private static Field getField(CurseProject project, CurseFile file) throws CurseException {
 		Field newField;
 		if(project.categorySection().name().equalsIgnoreCase("modpacks") && file.hasAlternateFile()) {
 			newField = new Field(EmbedBuilder.ZERO_WIDTH_SPACE,
-                "**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-                        + "`" + "\n **Category**: `" + project.categorySection().name() + "`" + "\n **GameVersion**: `"
-                        + getGameVersions(project) + "`" + "\n **Download Link**: " + "[Download](" + file.downloadURL()+ ")"
-                        + "\n **Server Files Download Link**: " + "[Download](" + file.alternateFile().downloadURL()+ ")", false);
+					"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
+                    + "`" + "\n **Category**: `" + project.categorySection().name() + "`" + "\n **GameVersion**: `"
+                    + getGameVersions(project) + "`", false);
 		} else {
 			newField = new Field(EmbedBuilder.ZERO_WIDTH_SPACE,
-                "**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-                        + "`" + "\n **Category**: `" + project.categorySection().name() + "`" + "\n **GameVersion**: `"
-                        + getGameVersions(project) + "`" + "\n **Download Link**: " + "[Download](" + file.downloadURL()
-                        + ")", false);
+	                "**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
+                    + "`" + "\n **Category**: `" + project.categorySection().name() + "`" + "\n **GameVersion**: `"
+                    + getGameVersions(project) + "`",false);
 		}
 		return newField;
 	}
@@ -101,16 +110,13 @@ public class Embed {
         int id = proj.files().first().id();
         return urlPre + "/files/" + id;
     }
-    
-    private static String getAltUrl(final CurseProject proj) throws CurseException {
-        String urlPre = proj.url().toString();
-        int id = proj.files().first().alternateFileID();
-        return urlPre + "/files/" + id;
-    }
-    
+
     private static String formatChangelog(final CurseFile file) throws CurseException {
-        String string = Processor.process(file.changelog().html()).replace("<br>", "\n").replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;",
+    	System.out.println(file.changelog().html());
+    	
+        String string = Processor.process(file.changelog().html()).replace("<br>", "\n").replace("</p>", "\n").replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;",
                 ">").replaceAll("(?s)<[^>]*>(<[^>]*>)*", "");
+        System.out.println(string);
         string = string.replaceAll("https.*?\\s", "");
         String out = "";
         int additionalLines = 0;

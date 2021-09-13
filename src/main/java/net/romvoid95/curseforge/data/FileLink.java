@@ -1,4 +1,4 @@
-package net.romvoid95.curseforge.data.config;
+package net.romvoid95.curseforge.data;
 
 
 public enum FileLink {

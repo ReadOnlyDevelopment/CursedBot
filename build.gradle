@@ -9,31 +9,50 @@ group = "net.romvoid95.curseforge" // http://maven.apache.org/guides/mini/guide-
 mainClassName = 'net.romvoid95.curseforge.CurseForgeBot'
 
 repositories {
-    maven {
-        url "https://jitpack.io"
-    }
-    jcenter()
-	maven { url 'https://maven.romvoid.dev' }
+	mavenCentral()
+	maven { url 'https://m2.dv8tion.net/releases' }
+    maven { url 'https://jitpack.io' }
+	mavenLocal()
+	//maven { url "https://m2.chew.pro/releases" }
 }
 
 dependencies {
-	compile('net.dv8tion:JDA:4.2.0_228'){
-		transitive = true
+
+	implementation 'org.apache.maven:apache-maven:3.8.1'
+
+	implementation('net.dv8tion:JDA:4.3.0_324'){
 		exclude module: 'opus-java'
-	}
-	compile("com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"){
-		transitive = true
 		exclude module: 'slf4j-api'
 	}
-	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
-	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-	compile group: 'com.typesafe', name: 'config', version: '1.4.1'
-	compile 'es.nitaur.markdown:txtmark:0.16'
-	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
-	compile 'net.rom.utility:JavaUtilities:2.0.4'
+	
+	implementation('com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT'){
+		exclude module: 'slf4j-api'
+	}
+
+	implementation('com.github.ROMVoid95:JavaUtilities:3.0.0'){
+		exclude module: 'slf4j-api'
+	}
+
+	implementation "com.google.guava:guava:30.1-jre"
+	implementation 'com.google.code.gson:gson:2.8.7'
+	implementation group: 'com.typesafe', name: 'config', version: '1.4.1'
+	implementation 'es.nitaur.markdown:txtmark:0.16'
+	
+	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.2'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.2'
+	
+	compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	
+	testCompileOnly 'org.projectlombok:lombok:1.18.20'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+	
+	implementation 'pw.chew:jda-chewtils:1.0.1'
 }
 
-jar {
+shadowJar {
 	manifest {
 		attributes(
 				'Main-Class': mainClassName

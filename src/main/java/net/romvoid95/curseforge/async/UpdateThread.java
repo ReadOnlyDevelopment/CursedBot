@@ -1,6 +1,9 @@
 package net.romvoid95.curseforge.async;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -12,26 +15,31 @@ import com.therandomlabs.curseapi.file.CurseFile;
 import com.therandomlabs.curseapi.project.CurseProject;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.interactions.components.Component;
 import net.rom.utility.async.Async;
 import net.romvoid95.curseforge.CurseForgeBot;
 import net.romvoid95.curseforge.DataInterface;
 import net.romvoid95.curseforge.data.Data;
-import net.romvoid95.curseforge.data.cache.ProjectData;
+import net.romvoid95.curseforge.data.FileLink;
+import net.romvoid95.curseforge.data.cache.Cache.ProjectData;
 import net.romvoid95.curseforge.data.config.Config;
-import net.romvoid95.curseforge.data.config.FileLink;
-import net.romvoid95.curseforge.data.override.ProjectOverride;
+import net.romvoid95.curseforge.data.override.OverrideList.ProjectOverride;
 
 public class UpdateThread {
-	
+
+	private ScheduledExecutorService service;
+	private int delay;
+	String THREAD_NAME;
+	List<Component> components;
 	private final Logger LOG;
-	
+
 	private CurseProject proj;
 	private CurseFile newFile;
 
 	private Integer projectId;
-
 	private Integer newFileId;
 	private Integer cachedFileId;
 
@@ -41,11 +49,14 @@ public class UpdateThread {
 	private String description;
 	private String format;
 
-	public UpdateThread(ProjectData projectData) {
-		
+	private final DataInterface INTERFACE = CurseForgeBot._instance.getDataInterface();
+	private final JDA JDA = CurseForgeBot._instance.getJda();
+
+	public UpdateThread(ProjectData projectData, int id, int delay) {
+		THREAD_NAME = "UpdateThread-" + id;
+		this.delay = delay;
 		this.projectId = projectData.getProjectId();
-		this.cachedFileId = projectData.getFileId();
-		LOG = LoggerFactory.getLogger( "UpdateThread-" + getProjectId()); 
+		LOG = (Logger) LoggerFactory.getLogger(THREAD_NAME);
 		getMessageData(projectId);
 
 		Optional<CurseProject> project;
@@ -61,17 +72,17 @@ public class UpdateThread {
 
 	private void getMessageData(Integer projectId) {
 		Config config = Data.config().get();
-		ProjectOverride override = DataInterface.findOverride(projectId);
+		ProjectOverride override = INTERFACE.findOverride(projectId);
 		if (override.getChannel().equals("default")) {
-			this.channel = CurseForgeBot.INSTANCE.getJda().getTextChannelById(config.getDefaultChannel());
+			this.channel = JDA.getTextChannelById(config.getDefaultChannel());
 		} else {
-			this.channel = CurseForgeBot.INSTANCE.getJda().getTextChannelById(override.getChannel());
+			this.channel = JDA.getTextChannelById(override.getChannel());
 		}
-		if(!Data.config().get().getDefulatRole().equals("none") && !override.getRole().equals("none")) {
+		if (!Data.config().get().getDefulatRole().equals("none") && !override.getRole().equals("none")) {
 			if (override.getRole().equals("default")) {
-				this.role = CurseForgeBot.INSTANCE.getJda().getRoleById(config.getDefulatRole());
+				this.role = JDA.getRoleById(config.getDefulatRole());
 			} else {
-				this.role = CurseForgeBot.INSTANCE.getJda().getRoleById(override.getRole());
+				this.role = JDA.getRoleById(override.getRole());
 			}
 		}
 		if (override.getDescription().equals("default")) {
@@ -93,57 +104,63 @@ public class UpdateThread {
 
 	private boolean isNewFile() throws CurseException {
 		newFileId = proj.files().first().id();
+		Data.cache().get().getCache().forEach(pd -> {
+			if (pd.getProjectId() == this.projectId) {
+				this.cachedFileId = pd.getFileId();
+			}
+		});
 		return cachedFileId < newFileId;
 	}
 
 	private synchronized void runCheck() {
-		LOG.info("UpdateThread runCheck() Start");
 		try {
 			if (isNewFile()) {
 				LOG.info("New File Found for" + proj.name() + " [New File] = " + proj.files().first().id());
 				newFile = proj.files().first();
-				ProjectData data = new ProjectData(getProjectId(), newFileId);
-				DataInterface.updateFileId(data);
+				ProjectData data = new ProjectData(projectId, newFileId);
+				INTERFACE.updateFileId(data);
 				EmbedBuilder builder;
 				switch (this.filelink) {
 				case DIRECT:
 					builder = Embed.directLinkEmbed(this.proj, this.newFile, this.channel, this.description,
 							this.format);
+					components = Embed.getDirectDownloadButtons(this.proj, this.newFile);
 					break;
 				case CURSEFORGE:
 					builder = Embed.curseLinkEmbed(this.proj, this.newFile, this.channel, this.description,
 							this.format);
-					break;
-				case DEFAULT:
-					builder = Embed.noLinkEmbed(this.proj, this.newFile, this.channel, this.description, this.format);
+					components = Embed.getCursePageButtons(this.proj);
 					break;
 				default:
 					builder = Embed.noLinkEmbed(this.proj, this.newFile, this.channel, this.description, this.format);
+					components = Collections.emptyList();
 				}
+
 				if (this.role != null) {
 					this.channel.sendMessage(role.getAsMention()).queue();
-					this.channel.sendMessage(builder.build()).queue();
+					this.channel.sendMessageEmbeds(builder.build()).setActionRow(components).queue();
+
 				} else {
-					this.channel.sendMessage(builder.build()).queue();
+					this.channel.sendMessageEmbeds(builder.build()).setActionRow(components).queue();
 				}
-				LOG.info("UpdateThread runCheck() Finished");
+
 				proj.refreshFiles();
-			} else {
-				LOG.info("UpdateThread runCheck() Finished");
 			}
+			LOG.info("runCheck() for " + proj.name() + "(" + projectId + ") completed");
 		} catch (CurseException e) {
-			e.printStackTrace();
+			LOG.error("runCheck() for " + proj.name() + "(" + projectId + ") failed!", e);
 		}
 	}
 
-	public void run(int delay) {
-		
-		Async.task("UpdateThread-" + getProjectId(), () -> {
+	public void run() {
+
+		this.service = Async.task(THREAD_NAME, () -> {
 			runCheck();
-		}, Long.valueOf(String.valueOf(delay)), Long.valueOf(String.valueOf(30)), TimeUnit.SECONDS);
+		}, delay, 45, TimeUnit.SECONDS);
 	}
 
-	public Integer getProjectId() {
-		return projectId;
+	public void shutdown() {
+		LOG.info("Stopping " + THREAD_NAME);
+		this.service.shutdownNow();
 	}
 }

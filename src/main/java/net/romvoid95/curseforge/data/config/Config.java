@@ -1,18 +1,26 @@
 package net.romvoid95.curseforge.data.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+
+import org.apache.commons.collections4.ListUtils;
+
+import net.romvoid95.curseforge.data.FileLink;
 
 public class Config {
 
 	private String token = "INSERT-TOKEN";
+	private String owner = "owner";
+	private String[] prefixes = new String[] {">>"}; 
 	private Boolean debug = false;
 	private String defaultChannel = "SET ID";
 	private String defulatRole = "none";
 	private FileLink updateFileLink = FileLink.DEFAULT;
 	private String defaultDescription = "New File Detected For CurseForge Project";
 	private String discordFormat = "css";
-	private Integer[] projects = new Integer[] {123456,987654};
+	private List<Integer> projects = new ArrayList<>();
 
 	public Config() {}
 	
@@ -25,9 +33,11 @@ public class Config {
 	 * @param discordFormat
 	 * @param projects
 	 */
-	public Config(String token, Boolean debug, String defaultChannel, String defulatRole, FileLink updateFileLink, String defaultDescription, String discordFormat, Integer[] projects) {
+	public Config(String token, String owner, String[] prefixes, Boolean debug, String defaultChannel, String defulatRole, FileLink updateFileLink, String defaultDescription, String discordFormat, List<Integer> projects) {
 		super();
 		this.token = token;
+		this.owner = owner;
+		this.prefixes = prefixes;
 		this.debug = debug;
 		this.defaultChannel = defaultChannel;
 		this.defulatRole = defulatRole;
@@ -39,6 +49,14 @@ public class Config {
 
 	public String getToken() {
 		return token;
+	}
+	
+	public String getOwner() {
+		return owner;
+	}
+	
+	public String[] getPrefixes() {
+		return prefixes;
 	}
 	
 	public Boolean getDebug() {
@@ -65,12 +83,20 @@ public class Config {
 		return discordFormat;
 	}
 
-	public Integer[] getProjects() {
+	public List<Integer> getProjects() {
 		return projects;
 	}
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+	
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	
+	public void setPrefixes(String[] prefixes) {
+		this.prefixes = prefixes;
 	}
 	
 	public void setDebug(Boolean debug) {
@@ -97,12 +123,26 @@ public class Config {
 		this.discordFormat = discordFormat;
 	}
 
-	public void setProjects(Integer[] projects) {
+	public void setProjects(List<Integer> projects) {
 		this.projects = projects;
+	}
+	
+	public boolean addProject(Integer project) {
+		return this.projects.add(project);
 	}
 	
 	public Config withToken(String token) {
 		this.token = token;
+		return this;
+	}
+	
+	public Config withOwner(String owner) {
+		this.owner = owner;
+		return this;
+	}
+	
+	public Config withPrefixes(String[] prefixes) {
+		this.prefixes = prefixes;
 		return this;
 	}
 	
@@ -136,7 +176,7 @@ public class Config {
 		return this;
 	}
 
-	public Config withProjects(Integer[] projects) {
+	public Config withProjects(List<Integer> projects) {
 		this.projects = projects;
 		return this;
 	}
@@ -146,7 +186,7 @@ public class Config {
 		return Objects.equals(debug, other.debug) && Objects.equals(defaultChannel, other.defaultChannel)
 				&& Objects.equals(defaultDescription, other.defaultDescription)
 				&& Objects.equals(defulatRole, other.defulatRole) && Objects.equals(discordFormat, other.discordFormat)
-				&& Arrays.equals(projects, other.projects) && Objects.equals(token, other.token)
-				&& updateFileLink == other.updateFileLink;
+				&& ListUtils.isEqualList(projects, other.projects) && Objects.equals(token, other.token)
+				&& Arrays.equals(prefixes, other.prefixes) && updateFileLink == other.updateFileLink;
 	}
 }
