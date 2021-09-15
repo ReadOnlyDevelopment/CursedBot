@@ -10,9 +10,9 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.romvoid95.curseforge.command.base.BaseCommand;
 
-public class GithubCommand extends BaseCommand {
+public class CommandGithub extends BaseCommand {
 
-	public GithubCommand() {
+	public CommandGithub() {
 		super("github", new Category("General"), "[guild_id]");
 		this.aliases("git", "repo");
 		this.help("Returns the github repository for the bot");
@@ -21,6 +21,7 @@ public class GithubCommand extends BaseCommand {
 
 	@Override
 	public void execute(CommandEvent event) {
+		super.execute(event);
 		Field field = new Field("Github Link", "[Github Repository](https://github.com/ReadOnlyDevelopment/CursedBot)", false);
 		embed(event, "CursedBot Github","Have an issue? Or want to contribute? Head on over to my Github Repo!", field);
 	}

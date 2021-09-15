@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.romvoid95.curseforge.command.base.BaseCommand;
 import net.romvoid95.curseforge.command.base.ResultLevel;
 
-public class InviteCommand extends BaseCommand {
+public class CommandInvite extends BaseCommand {
 	
 	private String oauthLink;
 	private EnumSet<Permission> botPerms = EnumSet.of(
@@ -30,13 +30,14 @@ public class InviteCommand extends BaseCommand {
 			Permission.MESSAGE_ADD_REACTION,
 			Permission.CREATE_INSTANT_INVITE);
 
-	public InviteCommand() {
+	public CommandInvite() {
 		super("invite", new Category("General"), "[guild_id]");
 		this.help("Generates an invite link for the bot");
 	}
 
 	@Override
 	public void execute(CommandEvent event) {
+		super.execute(event);
         if (oauthLink == null) {
             try {
                 ApplicationInfo info = event.getJDA().retrieveApplicationInfo().complete();

@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.romvoid95.curseforge.async.CurrentThreads;
 import net.romvoid95.curseforge.command.CommandAddProject;
+import net.romvoid95.curseforge.command.CommandGithub;
+import net.romvoid95.curseforge.command.CommandInvite;
 import net.romvoid95.curseforge.command.CommandSearch;
 import net.romvoid95.curseforge.data.Data;
 
@@ -38,7 +40,11 @@ public class CurseForgeBot {
 		clientBuilder = new CommandClientBuilder();
 		clientBuilder.setOwnerId(Data.config().get().getOwner());
 		clientBuilder.setPrefixes(Data.config().get().getPrefixes());
-		clientBuilder.addCommands(new CommandAddProject(), new CommandSearch(eventWaiter));
+		clientBuilder.addCommands(
+				new CommandAddProject(), 
+				new CommandSearch(eventWaiter),
+				new CommandInvite(),
+				new CommandGithub());
 		
 		EnumSet<GatewayIntent> intents = EnumSet.of(
 				GatewayIntent.GUILD_EMOJIS, 
