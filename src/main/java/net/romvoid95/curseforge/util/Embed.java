@@ -1,4 +1,4 @@
-package net.romvoid95.curseforge.async;
+package net.romvoid95.curseforge.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -112,11 +112,8 @@ public class Embed {
     }
 
     private static String formatChangelog(final CurseFile file) throws CurseException {
-    	System.out.println(file.changelog().html());
-    	
-        String string = Processor.process(file.changelog().html()).replace("<br>", "\n").replace("</p>", "\n").replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;",
+    	String string = Processor.process(file.changelog().html()).replace("<br>", "\n").replace("</p>", "\n").replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;",
                 ">").replaceAll("(?s)<[^>]*>(<[^>]*>)*", "");
-        System.out.println(string);
         string = string.replaceAll("https.*?\\s", "");
         String out = "";
         int additionalLines = 0;
@@ -137,7 +134,7 @@ public class Embed {
      * @throws CurseException the curse exception
      */
     private static String getGameVersions(final CurseProject proj) throws CurseException {
-        if (proj.files().first().gameVersionStrings().isEmpty())
+        if (proj.files().first().gameVersions().isEmpty())
             return "UNKNOWN";
         String out = "";
         final Stream<String> stream = proj.files().first().gameVersionStrings().stream().sorted();

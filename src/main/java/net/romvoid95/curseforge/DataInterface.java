@@ -18,31 +18,40 @@ import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.rom.utility.system.OS;
+import net.rom.utility.system.SystemPlatform;
 import net.romvoid95.curseforge.async.CurrentThreads;
 import net.romvoid95.curseforge.data.Data;
 import net.romvoid95.curseforge.data.cache.Cache.ProjectData;
 import net.romvoid95.curseforge.data.config.Config;
 import net.romvoid95.curseforge.data.override.OverrideList.ProjectOverride;
-import net.romvoid95.curseforge.manager.JsonDataManager;
+import net.romvoid95.curseforge.io.FileIO;
+import net.romvoid95.curseforge.io.JsonDataManager;
 
 public class DataInterface {
 
+	private static DataInterface _instance;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(DataInterface.class);
-	private static File lockFile = new File("cache/cacheLock");
+	private static File lockFile = new File("data\\lock.file");
 	private List<Integer> projectList;
 
+	public static DataInterface instance() {
+		if(_instance == null) {
+			_instance = new DataInterface();
+		}
+		return _instance;
+	}
+	
 	public void setup() {
-		Path cache = Paths.get("cache");
-		Path overrides = Paths.get("overrides");
+		Path data = Paths.get(SystemPlatform.CURRENT_OS == OS.WINDOWS ? "data" : ".data");
 		try {
-			if (!cache.toFile().exists())
-				Files.createDirectory(cache);
-			if (!overrides.toFile().exists())
-				Files.createDirectory(overrides);
+			if (!data.toFile().exists())
+				Files.createDirectory(data);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		initializeCache();
 		this.projectList = Data.config().get().getProjects();
 		generateOverrides();
@@ -105,9 +114,9 @@ public class DataInterface {
 		}
 		embed.setColor(Color.GREEN);
 		setCaches();
-		CurseForgeBot._instance.getCurrentThreads().resetThreads();
-		CurseForgeBot._instance.setCurrentThreads(new CurrentThreads(Data.cache().get()));
-		CurseForgeBot._instance.setRuns();
+		CurseForgeBot.instance().getCurrentThreads().resetThreads();
+		CurseForgeBot.instance().setCurrentThreads(new CurrentThreads(Data.cache().get()));
+		CurseForgeBot.instance().setRuns();
 		
 		return embed;
 	}
@@ -116,6 +125,9 @@ public class DataInterface {
 		if (!lockFile.exists()) {
 			try {
 				lockFile.createNewFile();
+				if(SystemPlatform.CURRENT_OS == OS.WINDOWS) {
+					FileIO.setHidden(lockFile.toPath());
+				}
 				Data.cache().get();
 				Data.cache().get().setProjectData(new ArrayList<ProjectData>());
 				Data.cache().save();

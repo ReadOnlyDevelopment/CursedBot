@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.DosFileAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FileIO {
 	private static final String IS_NULL = "null!";
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 
-	public static String read(File file){
+	public static String read(File file) {
 		return read(file.toPath());
 	}
 
@@ -34,5 +38,16 @@ public class FileIO {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void setHidden(Path filepath) {
+		try {
+			Files.setAttribute(filepath, "dos:hidden", true);
+			DosFileAttributes attr = Files.readAttributes(filepath, DosFileAttributes.class);
+			if(attr.isHidden()) {
+				log.info("Sucessfully set " + filepath + " as hidden");
+			}
+		} catch (IOException e) {
+		      e.printStackTrace();
+		}
+	}
 }
-

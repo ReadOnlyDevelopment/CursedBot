@@ -15,18 +15,18 @@ import com.therandomlabs.curseapi.file.CurseFile;
 import com.therandomlabs.curseapi.project.CurseProject;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.interactions.components.Component;
 import net.rom.utility.async.Async;
-import net.romvoid95.curseforge.CurseForgeBot;
 import net.romvoid95.curseforge.DataInterface;
 import net.romvoid95.curseforge.data.Data;
 import net.romvoid95.curseforge.data.FileLink;
 import net.romvoid95.curseforge.data.cache.Cache.ProjectData;
 import net.romvoid95.curseforge.data.config.Config;
 import net.romvoid95.curseforge.data.override.OverrideList.ProjectOverride;
+import net.romvoid95.curseforge.util.DiscordUtils;
+import net.romvoid95.curseforge.util.Embed;
 
 public class UpdateThread {
 
@@ -44,13 +44,12 @@ public class UpdateThread {
 	private Integer cachedFileId;
 
 	private TextChannel channel;
-	private Role role;
+	private Optional<Role> role;
 	private FileLink filelink;
 	private String description;
 	private String format;
 
-	private final DataInterface INTERFACE = CurseForgeBot._instance.getDataInterface();
-	private final JDA JDA = CurseForgeBot._instance.getJda();
+	private final DataInterface INTERFACE = new DataInterface();
 
 	public UpdateThread(ProjectData projectData, int id, int delay) {
 		THREAD_NAME = "UpdateThread-" + id;
@@ -73,16 +72,36 @@ public class UpdateThread {
 	private void getMessageData(Integer projectId) {
 		Config config = Data.config().get();
 		ProjectOverride override = INTERFACE.findOverride(projectId);
-		if (override.getChannel().equals("default")) {
-			this.channel = JDA.getTextChannelById(config.getDefaultChannel());
-		} else {
-			this.channel = JDA.getTextChannelById(override.getChannel());
+		
+		if(config.getDebug()) {
+			LOG.debug(override.toString());
+			for(String string : override.verifyDiscordEntities()) {
+				LOG.debug(string);
+			}
 		}
-		if (!Data.config().get().getDefulatRole().equals("none") && !override.getRole().equals("none")) {
-			if (override.getRole().equals("default")) {
-				this.role = JDA.getRoleById(config.getDefulatRole());
+		
+		if (override.getChannel().equals("default")) {
+			Optional<TextChannel> optionalChannel = DiscordUtils.getChannel(config.getDefaultChannel());
+			if(optionalChannel.isPresent()) {
+				this.channel = optionalChannel.get();
 			} else {
-				this.role = JDA.getRoleById(override.getRole());
+				LOG.error("The Channel ID for Project " + proj.name() + " Was not found by JDA!, Terminating Thread");
+				this.shutdown();
+			}
+		} else {
+			Optional<TextChannel> optionalChannel = DiscordUtils.getChannel(override.getChannel());
+			if(optionalChannel.isPresent()) {
+				this.channel = optionalChannel.get();
+			} else {
+				LOG.error("The Channel ID for Project " + proj.name() + " Was not found by JDA!, Terminating Thread");
+				this.shutdown();
+			}
+		}
+		if(!override.getRole().equals("none") && !override.getRole().equals("none")) {
+			if (override.getRole().equals("default")) {
+				this.role = DiscordUtils.getRole(config.getDefulatRole());
+			} else {
+				this.role = DiscordUtils.getRole(override.getRole());
 			}
 		}
 		if (override.getDescription().equals("default")) {
@@ -136,8 +155,8 @@ public class UpdateThread {
 					components = Collections.emptyList();
 				}
 
-				if (this.role != null) {
-					this.channel.sendMessage(role.getAsMention()).queue();
+				if (this.role.isPresent()) {
+					this.channel.sendMessage(role.get().getAsMention()).queue();
 					this.channel.sendMessageEmbeds(builder.build()).setActionRow(components).queue();
 
 				} else {
@@ -154,6 +173,8 @@ public class UpdateThread {
 
 	public void run() {
 
+		
+		
 		this.service = Async.task(THREAD_NAME, () -> {
 			runCheck();
 		}, delay, 45, TimeUnit.SECONDS);

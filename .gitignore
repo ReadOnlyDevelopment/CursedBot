@@ -1,5 +1,9 @@
 .gradle
 /build/
+/data/
+/logs/
+/reports/
+/bin/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -11,8 +15,5 @@ gradle-app.setting
 .gradletasknamecache
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
-cache/cache.json
-cache/cacheLock
+gradle/wrapper/gradle-wrapper.properties
 config.json
-overrides/list.json

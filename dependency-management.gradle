@@ -1,0 +1,54 @@
+def isNonStable = { String version ->
+	def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+	def regex = /^[0-9,.v-]+(-r)?$/
+	return !stableKeyword && !(version ==~ regex)
+}
+
+useLatestVersions {
+	updateBlacklist = [
+		'ROMVoid95:CurseAPI',
+		'ROMVoid95:JavaUtilities',
+		'com.github.JDA-Applications.JDA-Utilities:jda-utilities'
+	]
+}
+
+
+task dependencyUpdate(dependsOn: dependencyUpdates) {
+	group = 'dependency management'
+}
+
+task lastestVersions(dependsOn: useLatestVersions) {
+	group = 'dependency management'
+}
+
+task lastestVersionCheck(dependsOn: useLatestVersionsCheck) {
+	group = 'dependency management'
+}
+
+tasks.named("dependencyUpdates").configure {
+	outputFormatter = "html"
+	reportfileName = "DependencyUpdate-Report"
+	outputDir = "reports"
+	checkForGradleUpdate = false
+  
+	// Example 1: reject all non stable versions
+	rejectVersionIf {
+	  isNonStable(candidate.version)
+	}
+  
+	// Example 2: disallow release candidates as upgradable versions from stable versions
+	rejectVersionIf {
+	  isNonStable(candidate.version) && !isNonStable(currentVersion)
+	}
+  
+	// Example 3: using the full syntax
+	resolutionStrategy {
+	  componentSelection {
+		all {
+		  if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
+			reject('Release candidate')
+		  }
+		}
+	  }
+	}
+  }

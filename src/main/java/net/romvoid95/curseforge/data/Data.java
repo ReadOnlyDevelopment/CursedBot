@@ -3,7 +3,7 @@ package net.romvoid95.curseforge.data;
 import net.romvoid95.curseforge.data.cache.Cache;
 import net.romvoid95.curseforge.data.config.Config;
 import net.romvoid95.curseforge.data.override.OverrideList;
-import net.romvoid95.curseforge.manager.JsonDataManager;
+import net.romvoid95.curseforge.io.JsonDataManager;
 
 public class Data {
 	
@@ -14,7 +14,7 @@ public class Data {
     
     public static JsonDataManager<OverrideList> overrides() {
         if (overrides == null) {
-        	overrides = new JsonDataManager<>(OverrideList.class, "overrides/list.json", OverrideList::new);
+        	overrides = new JsonDataManager<>(OverrideList.class, "data\\overrides.json", OverrideList::new);
         }
     	return overrides;
     }
@@ -28,7 +28,7 @@ public class Data {
     
     public static JsonDataManager<Cache> cache() {
         if (cache == null) {
-        	cache = new JsonDataManager<>(Cache.class, "cache/cache.json", Cache::new);
+        	cache = new JsonDataManager<>(Cache.class, "data\\cache.json", Cache::new);
         }
         return cache;
     }

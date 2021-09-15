@@ -15,7 +15,7 @@ public class CurrentThreads {
 	private Logger LOG = (Logger) LoggerFactory.getLogger(CurrentThreads.class);
 	private Map<ProjectData, UpdateThread> currentThreads;
 	private int count = 0;
-	private int delay = 2;
+	private int delay = 10;
 	
 	public CurrentThreads(Cache cache) {
 		currentThreads = new LinkedHashMap<ProjectData, UpdateThread>();

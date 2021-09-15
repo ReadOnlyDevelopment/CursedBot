@@ -1,61 +1,63 @@
 plugins {
 	id 'java'
 	id 'application'
-	id "com.github.johnrengelman.shadow" version "6.1.0"
+	id 'se.patrikerdes.use-latest-versions' version '0.2.17'
+	id "com.github.johnrengelman.shadow" version "7.0.0"
+	id "com.github.ben-manes.versions" version "0.39.0"
 }
 
-version = '1.0.0'
-group = "net.romvoid95.curseforge" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+version = '2.0.0'
+group = "net.romvoid95.curseforge"
 mainClassName = 'net.romvoid95.curseforge.CurseForgeBot'
+
+String appName = 'cursedbot'
 
 repositories {
 	mavenCentral()
 	maven { url 'https://m2.dv8tion.net/releases' }
     maven { url 'https://jitpack.io' }
 	mavenLocal()
-	//maven { url "https://m2.chew.pro/releases" }
+}
+
+ext {
+	jdaVersion = '4.3.0_324'
+	curseVersion = 'master-SNAPSHOT'
+	javaUtilsVersion = '3.0.2'
+	jsrVersion = '3.0.9'
+	//guavaVersion = '30.1-jre'
+	//gsonVersion = '2.8.7'
+	typesafeVersion = '1.4.1'
+	txtmarkVersion = '0.16'
+	logbackVersion = '1.2.6'
+	jacksonVersion = '2.12.5'
+	lombokVersion = '1.18.20'
+	chewtilsVersion = '1.0.3'
 }
 
 dependencies {
 
-	implementation 'org.apache.maven:apache-maven:3.8.1'
+	implementation group: 'net.dv8tion', 				name: 'JDA', 				version: jdaVersion
+	implementation group: 'com.github.ROMVoid95', 		name: 'CurseAPI', 			version: curseVersion
+	implementation group: 'com.github.ROMVoid95', 		name: 'JavaUtilities', 		version: javaUtilsVersion
+	implementation group: 'org.codehaus.groovy', 		name: 'groovy-jsr223', 		version: jsrVersion
 
-	implementation('net.dv8tion:JDA:4.3.0_324'){
-		exclude module: 'opus-java'
-		exclude module: 'slf4j-api'
-	}
-	
-	implementation('com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT'){
-		exclude module: 'slf4j-api'
-	}
+	implementation group: 'com.typesafe', 				name: 'config', 			version: typesafeVersion
+	implementation group: 'es.nitaur.markdown', 		name: 'txtmark', 			version: txtmarkVersion
+	implementation group: 'ch.qos.logback', 			name: 'logback-classic', 	version: logbackVersion
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', 		version: jacksonVersion
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', 	version: jacksonVersion
+	implementation group: 'pw.chew', 					name: 'jda-chewtils', 		version: chewtilsVersion
+	compileOnly group: 'org.projectlombok', 			name: 'lombok', 			version: lombokVersion
+	annotationProcessor group: 'org.projectlombok', 	name: 'lombok', 			version: lombokVersion
+	testCompileOnly group: 'org.projectlombok', 		name: 'lombok', 			version: lombokVersion
+	testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', 			version: lombokVersion
 
-	implementation('com.github.ROMVoid95:JavaUtilities:3.0.0'){
-		exclude module: 'slf4j-api'
-	}
-
-	implementation "com.google.guava:guava:30.1-jre"
-	implementation 'com.google.code.gson:gson:2.8.7'
-	implementation group: 'com.typesafe', name: 'config', version: '1.4.1'
-	implementation 'es.nitaur.markdown:txtmark:0.16'
 	
-	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-	
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.2'
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.2'
-	
-	compileOnly 'org.projectlombok:lombok:1.18.20'
-	annotationProcessor 'org.projectlombok:lombok:1.18.20'
-	
-	testCompileOnly 'org.projectlombok:lombok:1.18.20'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
-	
-	implementation 'pw.chew:jda-chewtils:1.0.1'
+	//implementation "com.google.guava:guava:30.1-jre"
+	//implementation 'com.google.code.gson:gson:2.8.7'
 }
 
-shadowJar {
-	manifest {
-		attributes(
-				'Main-Class': mainClassName
-				)
-	}
-}
+apply from: 'dependency-management.gradle'

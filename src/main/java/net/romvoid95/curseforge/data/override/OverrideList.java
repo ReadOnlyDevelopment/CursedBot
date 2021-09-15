@@ -1,8 +1,12 @@
 package net.romvoid95.curseforge.data.override;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.romvoid95.curseforge.CurseForgeBot;
 import net.romvoid95.curseforge.data.FileLink;
 
 public class OverrideList {
@@ -84,6 +88,23 @@ public class OverrideList {
 			return String.format(
 					"ProjectOverride [id=%s, channel=%s, role=%s, fileLink=%s, description=%s, discordFormat=%s]", id,
 					channel, role, fileLink, description, discordFormat);
+		}
+		
+		public List<String> verifyDiscordEntities() {
+			List<String> list = new LinkedList<>();
+			try {
+				TextChannel channel = CurseForgeBot.instance().getJda().getTextChannelById(this.channel);
+				list.add("Channel Valid: TRUE | " + channel.getName());
+			} catch (NumberFormatException e) {
+				list.add("Channel Valid: FALSE | <>");
+			}
+			try {
+				Role role = CurseForgeBot.instance().getJda().getRoleById(this.role);
+				list.add("Role Valid: TRUE | " + role.getName());
+			} catch (NumberFormatException e) {
+				list.add("Role Valid: FALSE | <>");
+			}
+			return list;
 		}
 	}
 }

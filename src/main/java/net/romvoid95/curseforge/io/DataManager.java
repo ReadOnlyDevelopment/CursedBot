@@ -1,4 +1,4 @@
-package net.romvoid95.curseforge.manager;
+package net.romvoid95.curseforge.io;
 
 import java.io.Closeable;
 import java.util.function.Supplier;
