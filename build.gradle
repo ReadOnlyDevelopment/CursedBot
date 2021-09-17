@@ -27,14 +27,11 @@ ext {
 	curseVersion = 'master-SNAPSHOT'
 	javaUtilsVersion = '3.0.2'
 	jsrVersion = '3.0.9'
-	//guavaVersion = '30.1-jre'
-	//gsonVersion = '2.8.7'
-	typesafeVersion = '1.4.1'
-	txtmarkVersion = '0.16'
 	logbackVersion = '1.2.6'
 	jacksonVersion = '2.12.5'
 	lombokVersion = '1.18.20'
 	chewtilsVersion = '1.0.3'
+	reflectionsVersion = '0.9.12'
 }
 
 dependencies {
@@ -43,9 +40,7 @@ dependencies {
 	implementation group: 'com.github.ROMVoid95', 		name: 'CurseAPI', 			version: curseVersion
 	implementation group: 'com.github.ROMVoid95', 		name: 'JavaUtilities', 		version: javaUtilsVersion
 	implementation group: 'org.codehaus.groovy', 		name: 'groovy-jsr223', 		version: jsrVersion
-
-	implementation group: 'com.typesafe', 				name: 'config', 			version: typesafeVersion
-	implementation group: 'es.nitaur.markdown', 		name: 'txtmark', 			version: txtmarkVersion
+	implementation group: 'org.reflections', 			name: 'reflections', 		version: reflectionsVersion
 	implementation group: 'ch.qos.logback', 			name: 'logback-classic', 	version: logbackVersion
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', 		version: jacksonVersion
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', 	version: jacksonVersion
@@ -54,10 +49,6 @@ dependencies {
 	annotationProcessor group: 'org.projectlombok', 	name: 'lombok', 			version: lombokVersion
 	testCompileOnly group: 'org.projectlombok', 		name: 'lombok', 			version: lombokVersion
 	testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', 			version: lombokVersion
-
-	
-	//implementation "com.google.guava:guava:30.1-jre"
-	//implementation 'com.google.code.gson:gson:2.8.7'
 }
 
 apply from: 'dependency-management.gradle'

@@ -1,5 +1,8 @@
 package net.romvoid95.curseforge.data;
 
+import java.util.EnumSet;
+
+import net.dv8tion.jda.api.Permission;
 import net.romvoid95.curseforge.data.cache.Cache;
 import net.romvoid95.curseforge.data.config.Config;
 import net.romvoid95.curseforge.data.override.OverrideList;
@@ -31,5 +34,19 @@ public class Data {
         	cache = new JsonDataManager<>(Cache.class, "data\\cache.json", Cache::new);
         }
         return cache;
+    }
+    
+    public static EnumSet<Permission> getBotPermissions() {
+    	return 	EnumSet.of(
+    			Permission.VIEW_CHANNEL,
+    			Permission.MESSAGE_WRITE,
+    			Permission.MESSAGE_MANAGE,
+    			Permission.MESSAGE_EMBED_LINKS,
+    			Permission.MESSAGE_ATTACH_FILES,
+    			Permission.MESSAGE_READ,
+    			Permission.MESSAGE_EXT_EMOJI,
+    			Permission.MESSAGE_ADD_REACTION,
+    			Permission.CREATE_INSTANT_INVITE,
+    			Permission.MESSAGE_HISTORY);
     }
 }

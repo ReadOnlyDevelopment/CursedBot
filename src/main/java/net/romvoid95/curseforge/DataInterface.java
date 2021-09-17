@@ -10,13 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
 
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.rom.utility.system.OS;
 import net.rom.utility.system.SystemPlatform;
@@ -28,11 +26,11 @@ import net.romvoid95.curseforge.data.override.OverrideList.ProjectOverride;
 import net.romvoid95.curseforge.io.FileIO;
 import net.romvoid95.curseforge.io.JsonDataManager;
 
+@Slf4j
 public class DataInterface {
 
 	private static DataInterface _instance;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(DataInterface.class);
 	private static File lockFile = new File("data\\lock.file");
 	private List<Integer> projectList;
 
@@ -57,10 +55,10 @@ public class DataInterface {
 		generateOverrides();
 		setCaches();
 		
-		LOG.info("Total Projects: " + projectList.size());
+		log.info("Total Projects: " + projectList.size());
 		projectList.forEach(p ->  {
 			CurseProject project = getCurseProject(p);
-			LOG.info("Preparing UpdateThread for " + project.name());
+			log.info("Preparing UpdateThread for " + project.name());
 		});
 	}
 
@@ -76,7 +74,7 @@ public class DataInterface {
 			}
 		}
 		Data.cache().save();
-		LOG.info("Sucessfully updated FileID for Project: [" + projectData.getProjectId() + "]");
+		log.info("Sucessfully updated FileID for Project: [" + projectData.getProjectId() + "]");
 	}
 	
 	public EmbedBuilder addProject(EmbedBuilder embed, CurseProject project) throws CurseException {
@@ -84,33 +82,33 @@ public class DataInterface {
 		if(config.get().addProject(project.id())) {
 			config.save();
 			embed.addField("Add ProjectID", "Sucessfull", false);
-			LOG.info("Sucessfully added project " + project.id());
+			log.info("Sucessfully added project " + project.id());
 		} else {
 			embed.addField("Add ProjectID to Config", "Failed", false);
 			embed.setColor(Color.RED);
-			LOG.error("Failed to add project " + project.id());
+			log.error("Failed to add project " + project.id());
 		}
 		
 		ProjectOverride newOverride = new ProjectOverride(project.id());
 		if(Data.overrides().get().getOverrides().add(newOverride)) {
 			Data.overrides().save();
 			embed.addField("Add New ProjectOverride Data", "Sucessfull", false);
-			LOG.info("Sucessfully added Override data for new project " + project.id());
+			log.info("Sucessfully added Override data for new project " + project.id());
 		} else {
 			embed.addField("Add New ProjectOverride Data", "Failed", false);
 			embed.setColor(Color.RED);
-			LOG.error("Failed to add override data for new project " + project.id());
+			log.error("Failed to add override data for new project " + project.id());
 		}
 		
 		ProjectData projectData = new ProjectData(project.id(), project.files().first().id());
 		if(Data.cache().get().getCache().add(projectData)) {
 			Data.cache().save();
 			embed.addField("Add New ProjectData To Cache", "Sucessfull", false);
-			LOG.info("Sucessfully added cache data for new project " + project.id());
+			log.info("Sucessfully added cache data for new project " + project.id());
 		} else {
 			embed.addField("Add New ProjectData To Cache", "Failed", false);
 			embed.setColor(Color.RED);
-			LOG.error("Failed to add cache data for new project " + project.id());
+			log.error("Failed to add cache data for new project " + project.id());
 		}
 		embed.setColor(Color.GREEN);
 		setCaches();
@@ -131,7 +129,7 @@ public class DataInterface {
 				Data.cache().get();
 				Data.cache().get().setProjectData(new ArrayList<ProjectData>());
 				Data.cache().save();
-				LOG.info("Sucessfully initialized Cache data");
+				log.info("Sucessfully initialized Cache data");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -154,7 +152,7 @@ public class DataInterface {
     		}
     	});
     	Data.cache().save();
-    	LOG.info("Sucessfully set current Cache data");
+    	log.info("Sucessfully set current Cache data");
     }
 
 	private void generateOverrides() {
@@ -170,7 +168,7 @@ public class DataInterface {
 			}
 		});
 		Data.overrides().save();
-		LOG.info("Sucessfully initialized Overrides data");
+		log.info("Sucessfully initialized Overrides data");
 	}
 
 

@@ -5,21 +5,36 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.argument.RequiredArgument;
+import com.jagrosh.jdautilities.doc.standard.CommandInfo;
+import com.jagrosh.jdautilities.doc.standard.RequiredPermissions;
+import com.jagrosh.jdautilities.examples.doc.Author;
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.romvoid95.curseforge.DataInterface;
 import net.romvoid95.curseforge.command.base.BaseCommand;
+import net.romvoid95.curseforge.command.base.CommandCategory;
+import net.romvoid95.curseforge.command.base.annotation.CurseCommand;
 
-public class CommandAddProject extends BaseCommand {
+@CommandInfo(
+	name = {"add", "addproject"},
+	description = "Adds a new project to check and notify on each update"
+)
+@RequiredPermissions({Permission.MESSAGE_EMBED_LINKS})
+@Author("ROMVoid95")
+@CurseCommand
+public class CommandAdd extends BaseCommand {
 
-	public CommandAddProject() {
-		super("add", UPDATES, "[projectId]");
+	public CommandAdd() {
+		super("add", CommandCategory.UPDATES);
+		this.aliases("addproject");
 		this.guildOnly();
 		this.help("Adds a new project to check and notify on each update");
-		this.isGuildOnly();
+		this.addAgument(RequiredArgument.of("project_id", "The ID of the project to add"));
 	}
 
 	@Override

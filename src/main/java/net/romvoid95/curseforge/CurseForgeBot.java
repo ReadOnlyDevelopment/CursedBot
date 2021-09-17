@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 import javax.security.auth.login.LoginException;
 
-import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 
 import net.dv8tion.jda.api.JDA;
@@ -13,19 +12,15 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.romvoid95.curseforge.async.CurrentThreads;
-import net.romvoid95.curseforge.command.CommandAddProject;
-import net.romvoid95.curseforge.command.CommandGithub;
-import net.romvoid95.curseforge.command.CommandInvite;
-import net.romvoid95.curseforge.command.CommandSearch;
+import net.romvoid95.curseforge.core.ClientBuilder;
 import net.romvoid95.curseforge.data.Data;
 
 public class CurseForgeBot {
 
 	private static CurseForgeBot _instance;
-	private CommandClientBuilder clientBuilder;
 	private JDA jda;
 	private CurrentThreads currentThreads;
-	private EventWaiter eventWaiter;
+	public static final EventWaiter eventWaiter = new EventWaiter();
 
 	public static CurseForgeBot instance() {
 		if (_instance != null) {
@@ -36,15 +31,7 @@ public class CurseForgeBot {
 
 	private CurseForgeBot() throws LoginException, InterruptedException {
 
-		eventWaiter = new EventWaiter();
-		clientBuilder = new CommandClientBuilder();
-		clientBuilder.setOwnerId(Data.config().get().getOwner());
-		clientBuilder.setPrefixes(Data.config().get().getPrefixes());
-		clientBuilder.addCommands(
-				new CommandAddProject(), 
-				new CommandSearch(eventWaiter),
-				new CommandInvite(),
-				new CommandGithub());
+		ClientBuilder clientBuilder = ClientBuilder.instance();
 		
 		EnumSet<GatewayIntent> intents = EnumSet.of(
 				GatewayIntent.GUILD_EMOJIS, 
@@ -61,7 +48,7 @@ public class CurseForgeBot {
 				.create(Data.config().get().getToken(), intents)
 				.disableCache(caches)
 				.setActivity(Activity.playing("CurseForgeBot Init Stage"))
-				.addEventListeners(eventWaiter, clientBuilder.build())
+				.addEventListeners(eventWaiter, clientBuilder.getCommandClient())
 				.build()
 				.awaitReady();
 

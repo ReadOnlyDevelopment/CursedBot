@@ -1,35 +1,43 @@
 package net.romvoid95.curseforge.command.base;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.LoggerFactory;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
+import ch.qos.logback.classic.Logger;
+import groovyjarjarantlr4.v4.misc.Utils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
+import net.romvoid95.curseforge.CurseForgeBot;
 import net.romvoid95.curseforge.command.base.args.Argument;
 import net.romvoid95.curseforge.command.base.args.ArgumentIndex;
 
 public abstract class BaseCommand extends Command {
+
+	private static final Logger log = (Logger) LoggerFactory.getLogger(CurseForgeBot.class);
 	
-	protected static Category UPDATES = new Category("Updates");
 	private ArgumentIndex argumentIndex;
 	private CommandEvent event;
 	private Message returnMsg;
 
-	protected BaseCommand(String name, Category category, String arguments) {
+	protected BaseCommand(String name, Category category) {
 		this.name = name;
 		this.category = category;
-		this.arguments = arguments;
 	}
 	
 	@Override
 	public void execute(CommandEvent event) {
 		this.argumentIndex = new ArgumentIndex(event);
 		this.event = event;
+		log.info("(CommandEvent) " + event.getAuthor().getAsTag() + " ran the " + Utils.capitalize(this.name) + " command");
+		if(this.getArgCount() > 0) {
+			log.info("(CommandEvent) Invoked: [ " + this.name + " " + this.getArgsAsString() + " ]");
+		}
 	}
 	
 	protected void aliases(String... aliases) {
@@ -49,11 +57,7 @@ public abstract class BaseCommand extends Command {
 	}
 
 	protected void requiredRoles(Role... roles) {
-		List<String> roleNames = new ArrayList<>();
-		for(Role role : roles) {
-			roleNames.add(role.getName());
-		}
-		this.requiredRoles.addAll(roleNames);
+		Arrays.asList(roles).forEach(r -> this.addRequiredRoles(r.getName()));
 	}
 	
 	public void temporaryReply(ResultLevel level, String message, int time, TimeUnit unit) {
@@ -86,8 +90,7 @@ public abstract class BaseCommand extends Command {
 	
 	protected String getArgsAsString() {
 		StringBuilder b = new StringBuilder();
-		b.append("Args: ");
-		argumentIndex.list().forEach(s -> b.append("[" + s.val() + "]"));
+		argumentIndex.list().forEach(s -> b.append(s.val()));
 		return b.toString();
 	}
 }

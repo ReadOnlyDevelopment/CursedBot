@@ -1,4 +1,4 @@
-package net.romvoid95.curseforge.util;
+package net.romvoid95.curseforge.util.log;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;

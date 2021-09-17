@@ -1,12 +1,15 @@
 package net.romvoid95.curseforge.command;
 
-import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.argument.OptionalArgument;
+import com.jagrosh.jdautilities.doc.standard.CommandInfo;
+import com.jagrosh.jdautilities.doc.standard.RequiredPermissions;
+import com.jagrosh.jdautilities.examples.doc.Author;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -14,25 +17,26 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ApplicationInfo;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.romvoid95.curseforge.command.base.BaseCommand;
+import net.romvoid95.curseforge.command.base.CommandCategory;
 import net.romvoid95.curseforge.command.base.ResultLevel;
+import net.romvoid95.curseforge.command.base.annotation.CurseCommand;
+import net.romvoid95.curseforge.data.Data;
 
+@CommandInfo(
+	name = "Invite",
+	description = "Generates an invite link for the bot"
+)
+@RequiredPermissions({Permission.MESSAGE_EMBED_LINKS})
+@Author("ROMVoid95")
+@CurseCommand
 public class CommandInvite extends BaseCommand {
 	
 	private String oauthLink;
-	private EnumSet<Permission> botPerms = EnumSet.of(
-			Permission.VIEW_CHANNEL,
-			Permission.MESSAGE_WRITE,
-			Permission.MESSAGE_MANAGE,
-			Permission.MESSAGE_EMBED_LINKS,
-			Permission.MESSAGE_ATTACH_FILES,
-			Permission.MESSAGE_READ,
-			Permission.MESSAGE_EXT_EMOJI,
-			Permission.MESSAGE_ADD_REACTION,
-			Permission.CREATE_INSTANT_INVITE);
 
 	public CommandInvite() {
-		super("invite", new Category("General"), "[guild_id]");
+		super("invite", CommandCategory.SERVER_MEMBER);
 		this.help("Generates an invite link for the bot");
+		this.addAgument(OptionalArgument.of("guild_id", "The guild_id to create a custom invite link"));
 	}
 
 	@Override
@@ -41,7 +45,7 @@ public class CommandInvite extends BaseCommand {
         if (oauthLink == null) {
             try {
                 ApplicationInfo info = event.getJDA().retrieveApplicationInfo().complete();
-                oauthLink = info.isBotPublic() ? info.getInviteUrl(0L, botPerms) : "";
+                oauthLink = info.isBotPublic() ? info.getInviteUrl(0L, Data.getBotPermissions()) : "";
             } catch (Exception e) {
                 Logger log = LoggerFactory.getLogger("OAuth2");
                 log.error("Could not generate invite link ", e);
