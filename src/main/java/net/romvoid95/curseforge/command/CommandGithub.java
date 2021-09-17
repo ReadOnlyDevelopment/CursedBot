@@ -32,8 +32,7 @@ public class CommandGithub extends BaseCommand {
 	}
 
 	@Override
-	public void execute(CommandEvent event) {
-		super.execute(event);
+	public void onExecute(CommandEvent event) {
 		Field field = new Field("Github Link", "[Github Repository](https://github.com/ReadOnlyDevelopment/CursedBot)", false);
 		embed(event, "CursedBot Github","Have an issue? Or want to contribute? Head on over to my Github Repo!", field);
 	}

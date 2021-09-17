@@ -3,6 +3,7 @@ package net.romvoid95.curseforge.data;
 import java.util.EnumSet;
 
 import net.dv8tion.jda.api.Permission;
+import net.romvoid95.curseforge.DataInterface;
 import net.romvoid95.curseforge.data.cache.Cache;
 import net.romvoid95.curseforge.data.config.Config;
 import net.romvoid95.curseforge.data.override.OverrideList;
@@ -17,7 +18,7 @@ public class Data {
     
     public static JsonDataManager<OverrideList> overrides() {
         if (overrides == null) {
-        	overrides = new JsonDataManager<>(OverrideList.class, "data\\overrides.json", OverrideList::new);
+        	overrides = new JsonDataManager<>(OverrideList.class, DataInterface.data.toString() + "/overrides.json", OverrideList::new);
         }
     	return overrides;
     }
@@ -31,7 +32,7 @@ public class Data {
     
     public static JsonDataManager<Cache> cache() {
         if (cache == null) {
-        	cache = new JsonDataManager<>(Cache.class, "data\\cache.json", Cache::new);
+        	cache = new JsonDataManager<>(Cache.class, DataInterface.data.toString() + "/cache.json", Cache::new);
         }
         return cache;
     }
@@ -47,6 +48,7 @@ public class Data {
     			Permission.MESSAGE_EXT_EMOJI,
     			Permission.MESSAGE_ADD_REACTION,
     			Permission.CREATE_INSTANT_INVITE,
-    			Permission.MESSAGE_HISTORY);
+    			Permission.MESSAGE_HISTORY,
+    			Permission.MANAGE_ROLES);
     }
 }

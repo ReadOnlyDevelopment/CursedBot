@@ -30,8 +30,7 @@ import net.romvoid95.curseforge.io.JsonDataManager;
 public class DataInterface {
 
 	private static DataInterface _instance;
-	
-	private static File lockFile = new File("data\\lock.file");
+	public static Path data;
 	private List<Integer> projectList;
 
 	public static DataInterface instance() {
@@ -42,7 +41,7 @@ public class DataInterface {
 	}
 	
 	public void setup() {
-		Path data = Paths.get(SystemPlatform.CURRENT_OS == OS.WINDOWS ? "data" : ".data");
+		data = Paths.get(SystemPlatform.CURRENT_OS == OS.WINDOWS ? "data" : ".data");
 		try {
 			if (!data.toFile().exists())
 				Files.createDirectory(data);
@@ -118,8 +117,65 @@ public class DataInterface {
 		
 		return embed;
 	}
+	
+	public EmbedBuilder removeProject(EmbedBuilder embed, CurseProject project) throws CurseException {
+		JsonDataManager<Config> config = Data.config();
+		if(config.get().removeProject(project.id())) {
+			config.save();
+			embed.addField("Remove ProjectID", "Sucessfull", false);
+			log.info("Sucessfully removed project " + project.id());
+		} else {
+			embed.addField("Remove ProjectID from Config", "Failed", false);
+			embed.setColor(Color.RED);
+			log.error("Failed to Remove project " + project.id());
+		}
+		
+		ProjectOverride override = findOverride(project.id());
+		if(override != null) {
+			if(Data.overrides().get().getOverrides().remove(override)) {
+				Data.overrides().save();
+				embed.addField("Remove ProjectOverride Data", "Sucessfull", false);
+				log.info("Sucessfully Removed Override for project " + project.id());
+			} else {
+				embed.addField("Remove ProjectOverride Data", "Failed", false);
+				embed.setColor(Color.RED);
+				log.error("Failed to remove override data for project " + project.id());
+			}
+		} else {
+			embed.addField("Failed to retrieve Override Data", "Failed", false);
+			embed.setColor(Color.RED);
+			log.error("Failed to retrieve override data for project " + project.id());
+		}
+
+		
+		ProjectData projectData = findData(project.id());
+		if(projectData != null) {
+			if(Data.cache().get().getCache().remove(projectData)) {
+				Data.cache().save();
+				embed.addField("Remove ProjectData From Cache", "Sucessfull", false);
+				log.info("Sucessfully removed ProjectData from cache for project " + project.id());
+			} else {
+				embed.addField("Remove ProjectData From Cache", "Failed", false);
+				embed.setColor(Color.RED);
+				log.error("Failed to removed ProjectData from cache for project " + project.id());
+			}
+		} else {
+			embed.addField("Failed to retrieve ProjectData", "Failed", false);
+			embed.setColor(Color.RED);
+			log.error("Failed to retrieve ProjectData for project " + project.id());
+		}
+
+		embed.setColor(Color.GREEN);
+		setCaches();
+		CurseForgeBot.instance().getCurrentThreads().resetThreads();
+		CurseForgeBot.instance().setCurrentThreads(new CurrentThreads(Data.cache().get()));
+		CurseForgeBot.instance().setRuns();
+		
+		return embed;
+	}
 
 	private void initializeCache() {
+		File lockFile = new File(data.toString() + "/lock.file");
 		if (!lockFile.exists()) {
 			try {
 				lockFile.createNewFile();
@@ -177,6 +233,16 @@ public class DataInterface {
 		for (ProjectOverride override : overrideList) {
 			if (override.getId().equals(id)) {
 				return override;
+			}
+		}
+		return null;
+	}
+	
+	public ProjectData findData(Integer id) {
+		List<ProjectData> dataList = Data.cache().get().getCache();
+		for (ProjectData data : dataList) {
+			if (data.getProjectId().equals(id)) {
+				return data;
 			}
 		}
 		return null;

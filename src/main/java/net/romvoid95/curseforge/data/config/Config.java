@@ -131,6 +131,10 @@ public class Config {
 		return this.projects.add(project);
 	}
 	
+	public boolean removeProject(Integer project) {
+		return this.projects.remove(project);
+	}
+	
 	public Config withToken(String token) {
 		this.token = token;
 		return this;

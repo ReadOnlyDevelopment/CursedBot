@@ -17,7 +17,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.eventbus.Subscribe;
 
 public class JsonDataManager<T> implements DataManager<T> {
 
@@ -67,7 +66,6 @@ public class JsonDataManager<T> implements DataManager<T> {
 		return data;
 	}
 
-	@Subscribe
 	@Override
 	public void save() {
 		try {

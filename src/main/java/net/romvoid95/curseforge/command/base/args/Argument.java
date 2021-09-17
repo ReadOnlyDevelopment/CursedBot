@@ -1,6 +1,6 @@
 package net.romvoid95.curseforge.command.base.args;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 public class Argument implements IArgument<String> {
 

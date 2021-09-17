@@ -9,13 +9,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import com.google.common.base.Predicate;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.file.CurseFile;
+import com.therandomlabs.curseapi.file.CurseFiles;
 import com.therandomlabs.curseapi.project.CurseProject;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -41,13 +43,22 @@ public class Utils {
 					.appendDescription(formatLine("Summary","`" + t.summary() + "`"))
 					.addBlankField(false)
 					.addField("Latest File",
-							"**Type**: `" + DiscordUtils.capitalize(release) + "`\n" + "**Link**: ["
-									+ file.displayName() + "](" + url(file) + ")",
+							"**For Version(s)**: " + formatVersions(file.gameVersionStrings()) + "\n" +
+							"**Type**: `" + DiscordUtils.capitalize(release) + "`\n" + 
+							"**Link**: [" + file.displayName() + "](" + url(file) + ")",
 							false)
 					.setThumbnail(t.logo().thumbnailURL().toString()).build();
 		}
 
 	};
+	
+	private static String formatVersions(Set<String> set) {
+		StringBuilder builder = new StringBuilder();
+		for(String v : set) {
+			builder.append("`" + v + "` ");
+		}
+		return builder.toString();
+	}
 	
 	private static String formatTime(ZonedDateTime time) {
 		return time.format(dateOnly) + " *(" + Utils.last(time.toLocalDate()) + " days ago)*";
@@ -61,21 +72,25 @@ public class Utils {
 		return "**" + title + "**: \n" + rest + "\n\n";
 	}
 
-	public static Predicate<String> getAgumentPredicate(String... strings) {
+	public static Predicate<String> check(String string) {
 		return new Predicate<String>() {
+
 			@Override
-			public boolean apply(@Nullable String input) {
-				for (String string : strings) {
-					if (!input.equalsIgnoreCase(string))
-						return false;
-				}
-				return true;
+			public boolean test(String input) {
+				return input.equalsIgnoreCase(string);
 			}
+			
 		};
+	}
+
+	private static boolean filter(String v, String out) {
+		return v.equalsIgnoreCase(out);
 	}
 
 	private static CurseFile getFirst(CurseProject p) {
 		try {
+			CurseFiles<CurseFile> files = p.files();
+			
 			return p.files().first();
 		} catch (CurseException e) {
 			return null;

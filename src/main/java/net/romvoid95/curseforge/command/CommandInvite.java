@@ -40,8 +40,7 @@ public class CommandInvite extends BaseCommand {
 	}
 
 	@Override
-	public void execute(CommandEvent event) {
-		super.execute(event);
+	public void onExecute(CommandEvent event) {
         if (oauthLink == null) {
             try {
                 ApplicationInfo info = event.getJDA().retrieveApplicationInfo().complete();

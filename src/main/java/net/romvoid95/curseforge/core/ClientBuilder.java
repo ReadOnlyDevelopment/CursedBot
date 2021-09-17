@@ -1,8 +1,17 @@
 package net.romvoid95.curseforge.core;
 
+import java.util.Objects;
+
+import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import com.jagrosh.jdautilities.command.argument.CommandArgument;
+import com.jagrosh.jdautilities.command.argument.OptionalArgument;
+import com.jagrosh.jdautilities.command.argument.RequiredArgument;
+import com.jagrosh.jdautilities.command.Command.Category;
 
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.User;
 import net.romvoid95.curseforge.data.Data;
 import net.romvoid95.curseforge.data.config.Config;
 import net.romvoid95.curseforge.util.Reflect;
@@ -25,7 +34,46 @@ public final class ClientBuilder {
 		this.commandClient = new CommandClientBuilder();
 		commandClient.setOwnerId(CONFIG.getOwner());
 		commandClient.setPrefixes(CONFIG.getPrefixes());
-		commandClient = Reflect.registerAllCommands(commandClient);
+		Reflect.getCommandList().forEach(c -> commandClient.addCommand(c));
+		commandClient.setHelpConsumer((event) -> {
+                StringBuilder builder = new StringBuilder("**"+event.getSelfUser().getName()+"** commands:\n\n");
+                Category category = null;
+                builder.append("[arg]   = Required Argument\n");
+                builder.append("<args>  = Optional Argument\n");
+                for(Command command : Reflect.getCommandList())
+                {
+                    if(!command.isHidden() && (!command.isOwnerCommand() || event.isOwner()))
+                    {
+                        if(!Objects.equals(category, command.getCategory()))
+                        {
+                            category = command.getCategory();
+                            builder.append("\n  __").append(category==null ? "No Category" : category.getName()).append("__:\n");
+                        }
+                        builder.append("\n`").append(CONFIG.getPrefixes()[0]).append(command.getName());
+                        		for(CommandArgument<?> arg : command.getArguments()) {
+                        			if(arg instanceof RequiredArgument) {
+                        				RequiredArgument a = (RequiredArgument) arg;
+                        				builder.append(" " + a.getArgumentForHelp());
+                        			} else if(arg instanceof OptionalArgument) {
+                        				OptionalArgument a = (OptionalArgument) arg;
+                        				builder.append(" " + a.getArgumentForHelp());
+									}
+                        		}
+                        		builder.append("`");
+                        		builder.append(" - ").append(command.getHelp());
+                    }
+                }
+                User owner = event.getJDA().getUserById(CONFIG.getOwner());
+                if(owner!=null)
+                {
+                    builder.append("\n\nFor additional help, contact **").append(owner.getName()).append("**#").append(owner.getDiscriminator());
+                }
+                event.replyInDm(builder.toString(), unused ->
+                {
+                    if(event.isFromType(ChannelType.TEXT))
+                        event.reactSuccess();
+                }, t -> event.replyWarning("Help cannot be sent because you are blocking Direct Messages."));
+        });
 	}
 	
 	public CommandClient getCommandClient() {

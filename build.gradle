@@ -23,28 +23,35 @@ repositories {
 }
 
 ext {
-	jdaVersion = '4.3.0_324'
-	curseVersion = 'master-SNAPSHOT'
-	javaUtilsVersion = '3.0.2'
 	jsrVersion = '3.0.9'
 	logbackVersion = '1.2.6'
 	jacksonVersion = '2.12.5'
 	lombokVersion = '1.18.20'
 	chewtilsVersion = '1.0.3'
 	reflectionsVersion = '0.9.12'
+	guavaVersion = '30.1.1-jre'
 }
 
 dependencies {
-
-	implementation group: 'net.dv8tion', 				name: 'JDA', 				version: jdaVersion
-	implementation group: 'com.github.ROMVoid95', 		name: 'CurseAPI', 			version: curseVersion
-	implementation group: 'com.github.ROMVoid95', 		name: 'JavaUtilities', 		version: javaUtilsVersion
+	implementation("net.dv8tion:JDA:4.3.0_324") {
+		exclude group: 'opus-java'
+		exclude group: 'org.slf4j'
+	}
+	implementation("com.github.ROMVoid95:CurseAPI:1.0.3") {
+		exclude group: 'org.slf4j'
+	}
+	implementation("com.github.ROMVoid95:JavaUtilities:3.0.2") {
+		exclude group: 'org.slf4j'
+	}
+	implementation("pw.chew:jda-chewtils:1.0.3") {
+		exclude group: 'org.slf4j'
+	}
 	implementation group: 'org.codehaus.groovy', 		name: 'groovy-jsr223', 		version: jsrVersion
 	implementation group: 'org.reflections', 			name: 'reflections', 		version: reflectionsVersion
 	implementation group: 'ch.qos.logback', 			name: 'logback-classic', 	version: logbackVersion
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', 		version: jacksonVersion
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', 	version: jacksonVersion
-	implementation group: 'pw.chew', 					name: 'jda-chewtils', 		version: chewtilsVersion
+	implementation group: 'com.google.guava', 			name: 'guava', 				version: guavaVersion
 	compileOnly group: 'org.projectlombok', 			name: 'lombok', 			version: lombokVersion
 	annotationProcessor group: 'org.projectlombok', 	name: 'lombok', 			version: lombokVersion
 	testCompileOnly group: 'org.projectlombok', 		name: 'lombok', 			version: lombokVersion
@@ -52,3 +59,9 @@ dependencies {
 }
 
 apply from: 'dependency-management.gradle'
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+	options.incremental = true
+}
+

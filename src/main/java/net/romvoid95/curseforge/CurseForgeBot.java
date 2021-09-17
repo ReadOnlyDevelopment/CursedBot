@@ -48,7 +48,10 @@ public class CurseForgeBot {
 				.create(Data.config().get().getToken(), intents)
 				.disableCache(caches)
 				.setActivity(Activity.playing("CurseForgeBot Init Stage"))
-				.addEventListeners(eventWaiter, clientBuilder.getCommandClient())
+				.addEventListeners(
+						eventWaiter, 
+						clientBuilder.getCommandClient(),
+						new BotEventListener())
 				.build()
 				.awaitReady();
 
