@@ -33,7 +33,7 @@ ext {
 }
 
 dependencies {
-	implementation("net.dv8tion:JDA:4.3.0_324") {
+	implementation("net.dv8tion:JDA:4.3.0_330") {
 		exclude group: 'opus-java'
 		exclude group: 'org.slf4j'
 	}
