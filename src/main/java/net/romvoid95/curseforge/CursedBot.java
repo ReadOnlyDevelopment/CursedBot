@@ -15,21 +15,21 @@ import net.romvoid95.curseforge.async.CurrentThreads;
 import net.romvoid95.curseforge.core.ClientBuilder;
 import net.romvoid95.curseforge.data.Data;
 
-public class CurseForgeBot {
+public class CursedBot {
 
-	private static CurseForgeBot _instance;
+	private static CursedBot _instance;
 	private JDA jda;
 	private CurrentThreads currentThreads;
 	public static final EventWaiter eventWaiter = new EventWaiter();
 
-	public static CurseForgeBot instance() {
+	public static CursedBot instance() {
 		if (_instance != null) {
 			return _instance;
 		}
 		return null;
 	}
 
-	private CurseForgeBot() throws LoginException, InterruptedException {
+	private CursedBot() throws LoginException, InterruptedException {
 
 		ClientBuilder clientBuilder = ClientBuilder.instance();
 		
@@ -59,7 +59,7 @@ public class CurseForgeBot {
 
 	public static void main(String... args) {
 		try {
-			_instance = new CurseForgeBot();
+			_instance = new CursedBot();
 			
 			if (_instance.getJda().getStatus().isInit()) {
 				_instance.getJda().getPresence().setActivity(Activity.playing("Checking for Updates!"));

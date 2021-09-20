@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.romvoid95.curseforge.CurseForgeBot;
+import net.romvoid95.curseforge.CursedBot;
 
 public class DiscordUtils {
 
@@ -26,7 +26,7 @@ public class DiscordUtils {
 
 	public static Optional<Role> getRole(String id) {
 		try {
-			return Optional.of(CurseForgeBot.instance().getJda().getRoleById(id));
+			return Optional.of(CursedBot.instance().getJda().getRoleById(id));
 		} catch (NumberFormatException e) {
 			return Optional.empty();
 		}
@@ -34,7 +34,7 @@ public class DiscordUtils {
 	}
 
 	public static Optional<TextChannel> getChannel(String id) {
-		return Optional.ofNullable(CurseForgeBot.instance().getJda().getTextChannelById(id));
+		return Optional.ofNullable(CursedBot.instance().getJda().getTextChannelById(id));
 	}
 	
 	public static String capitalize(String input) {

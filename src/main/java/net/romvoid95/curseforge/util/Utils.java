@@ -13,14 +13,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.file.CurseFile;
 import com.therandomlabs.curseapi.file.CurseFiles;
 import com.therandomlabs.curseapi.project.CurseProject;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.romvoid95.curseforge.util.txtmark.HTML;
 
@@ -28,6 +27,20 @@ public class Utils {
 	
 	final static DateTimeFormatter dateOnly = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
 
+	public static final Function<Guild, MessageEmbed> guildsFunc = new Function<Guild, MessageEmbed>() {
+
+		@Override
+		public MessageEmbed apply(Guild t) {
+
+			return new EmbedBuilder().setTitle(t.getName(), t.getIconUrl())
+					.setDescription(formatLine("Owner", t.getOwner().getUser().getAsTag()))
+					.appendDescription(formatLine("Members", t.getMemberCount()))
+					.appendDescription(formatLine("Created", t.getTimeCreated().format(dateOnly)))
+					.setThumbnail(t.getIconUrl()).build();
+		}
+
+	};
+	
 	public static final Function<CurseProject, MessageEmbed> func = new Function<CurseProject, MessageEmbed>() {
 
 		@Override
@@ -83,15 +96,10 @@ public class Utils {
 		};
 	}
 
-	private static boolean filter(String v, String out) {
-		return v.equalsIgnoreCase(out);
-	}
-
 	private static CurseFile getFirst(CurseProject p) {
 		try {
 			CurseFiles<CurseFile> files = p.files();
-			
-			return p.files().first();
+			return files.first();
 		} catch (CurseException e) {
 			return null;
 		}

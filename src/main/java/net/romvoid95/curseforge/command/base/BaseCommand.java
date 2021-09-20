@@ -18,13 +18,13 @@ import groovyjarjarantlr4.v4.misc.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.romvoid95.curseforge.CurseForgeBot;
+import net.romvoid95.curseforge.CursedBot;
 import net.romvoid95.curseforge.command.base.args.Argument;
 import net.romvoid95.curseforge.command.base.args.ArgumentIndex;
 
 public abstract class BaseCommand extends Command {
 
-	private static final Logger log = (Logger) LoggerFactory.getLogger(CurseForgeBot.class);
+	private static final Logger log = (Logger) LoggerFactory.getLogger(CursedBot.class);
 	
 	private ArgumentIndex argumentIndex;
 	private CommandEvent event;
@@ -61,8 +61,8 @@ public abstract class BaseCommand extends Command {
 		this.help = string;
 	}
 	
-	protected void guildOnly() {
-		this.guildOnly = true;
+	protected void allowDms() {
+		this.guildOnly = false;
 	}
 	
 	protected void ownerOnly() {

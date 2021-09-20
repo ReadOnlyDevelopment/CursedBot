@@ -111,9 +111,9 @@ public class DataInterface {
 		}
 		embed.setColor(Color.GREEN);
 		setCaches();
-		CurseForgeBot.instance().getCurrentThreads().resetThreads();
-		CurseForgeBot.instance().setCurrentThreads(new CurrentThreads(Data.cache().get()));
-		CurseForgeBot.instance().setRuns();
+		CursedBot.instance().getCurrentThreads().resetThreads();
+		CursedBot.instance().setCurrentThreads(new CurrentThreads(Data.cache().get()));
+		CursedBot.instance().setRuns();
 		
 		return embed;
 	}
@@ -167,9 +167,9 @@ public class DataInterface {
 
 		embed.setColor(Color.GREEN);
 		setCaches();
-		CurseForgeBot.instance().getCurrentThreads().resetThreads();
-		CurseForgeBot.instance().setCurrentThreads(new CurrentThreads(Data.cache().get()));
-		CurseForgeBot.instance().setRuns();
+		CursedBot.instance().getCurrentThreads().resetThreads();
+		CursedBot.instance().setCurrentThreads(new CurrentThreads(Data.cache().get()));
+		CursedBot.instance().setRuns();
 		
 		return embed;
 	}

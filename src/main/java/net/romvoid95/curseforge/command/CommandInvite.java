@@ -7,13 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.command.argument.OptionalArgument;
-import com.jagrosh.jdautilities.doc.standard.CommandInfo;
-import com.jagrosh.jdautilities.doc.standard.RequiredPermissions;
-import com.jagrosh.jdautilities.examples.doc.Author;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ApplicationInfo;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.romvoid95.curseforge.command.base.BaseCommand;
@@ -22,12 +18,6 @@ import net.romvoid95.curseforge.command.base.ResultLevel;
 import net.romvoid95.curseforge.command.base.annotation.CurseCommand;
 import net.romvoid95.curseforge.data.Data;
 
-@CommandInfo(
-	name = "Invite",
-	description = "Generates an invite link for the bot"
-)
-@RequiredPermissions({Permission.MESSAGE_EMBED_LINKS})
-@Author("ROMVoid95")
 @CurseCommand
 public class CommandInvite extends BaseCommand {
 	
