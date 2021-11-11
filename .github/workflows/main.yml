@@ -1,0 +1,38 @@
+name: Build On Release
+
+on:
+  release:
+    types: 
+      - created
+
+  workflow_dispatch:
+
+jobs:
+  gradle:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    
+    - name: Checkout repository
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    
+    - name: Setup JDK
+    - uses: actions/setup-java@v2
+      with:
+        java-version: 8
+        
+    - name: Build
+    - uses: gradle/gradle-build-action@v2
+      with:
+        arguments: build
+        gradle-version: wrapper
+    
+    - name: Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: CursedBot
+        path: build/libs/CursedBot-2.0.0-all.jar
