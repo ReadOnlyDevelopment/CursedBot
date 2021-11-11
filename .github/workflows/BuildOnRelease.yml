@@ -9,10 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
+      - name: 'Get tag version'
+        id: tag
+        uses: battila7/get-version-action@v2
+        run: echo ${{ steps.tag.outputs.version-without-v }}
+    
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.0
         with:
-          fetch-depth: 1
+          ref: ${{ steps.tag.outputs.version-without-v }}
           
       - name: 'Validate Gradle wrapper'
         uses: gradle/wrapper-validation-action@v1.0.4
@@ -21,7 +26,6 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.m2
             ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('build.gradle') }}
           
@@ -31,10 +35,6 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
           cache: 'gradle'
-          
-      - name: 'Get tag version'
-        id: tag_version
-        uses: battila7/get-version-action@v2
         
       - name: 'Build'
         uses: gradle/gradle-build-action@v2
@@ -47,4 +47,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: 'CursedBot'
-          path: "build/libs/CursedBot-${{ steps.tag_version.outputs.version-without-v }}.jar"
+          path: "build/libs/CursedBot-${{ steps.tag.outputs.version-without-v }}.jar"
