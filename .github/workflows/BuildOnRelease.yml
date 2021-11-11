@@ -12,6 +12,8 @@ jobs:
       - name: 'Get tag version'
         id: tag
         uses: battila7/get-version-action@v2
+        
+      - name: 'Echo Tag Output'  
         run: echo ${{ steps.tag.outputs.version-without-v }}
     
       - name: 'Checkout repository'
