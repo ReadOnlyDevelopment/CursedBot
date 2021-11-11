@@ -1,0 +1,50 @@
+name: "Build On Release"
+on:
+  release:
+    types: created
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          
+      - name: 'Validate Gradle wrapper'
+        uses: gradle/wrapper-validation-action@v1.0.4
+        
+      - name: 'Cache'
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2
+            ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('build.gradle') }}
+          
+      - name: 'Setup Java'
+        uses: actions/setup-java@v2.3.1
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'gradle'
+          
+      - name: 'Get tag version'
+        id: tag_version
+        uses: battila7/get-version-action@v2
+        
+      - name: 'Build'
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: current
+          arguments: build
+          
+          
+      - name: Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'CursedBot'
+          path: "build/libs/CursedBot-${{ steps.tag_version.outputs.version-without-v }}.jar"
