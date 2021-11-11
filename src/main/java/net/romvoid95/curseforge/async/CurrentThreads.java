@@ -4,27 +4,31 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
 import net.romvoid95.curseforge.data.cache.Cache;
 import net.romvoid95.curseforge.data.cache.Cache.ProjectData;
 
 public class CurrentThreads {
 
-	private Logger LOG = (Logger) LoggerFactory.getLogger(CurrentThreads.class);
+	private Logger LOG = LoggerFactory.getLogger(CurrentThreads.class);
 	private Map<ProjectData, UpdateThread> currentThreads;
 	private int count = 0;
 	private int delay = 10;
 	
 	public CurrentThreads(Cache cache) {
 		currentThreads = new LinkedHashMap<ProjectData, UpdateThread>();
-		
+
 		cache.getCache().forEach(projData -> {
-			count += 1;
-			delay += 1;
-			currentThreads.put(projData, new UpdateThread(projData, count, delay));
+			this.buildUpdateThread(projData);
 		});
+	}
+	
+	private void buildUpdateThread(ProjectData data) {
+		LOG.info(data.toString());
+		UpdateThread thread = new UpdateThread(data, count++, delay++);
+		currentThreads.put(data, thread);
 	}
 	
 	public void resetThreads() {

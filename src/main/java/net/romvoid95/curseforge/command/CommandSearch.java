@@ -7,16 +7,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.command.argument.OptionalArgument;
-import com.jagrosh.jdautilities.command.argument.RequiredArgument;
-import com.jagrosh.jdautilities.menu.EmbedPaginator;
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
 import com.therandomlabs.curseapi.project.CurseSearchQuery;
 import com.therandomlabs.curseapi.project.CurseSearchSort;
 
+import io.github.romvoid95.command.CommandEvent;
+import io.github.romvoid95.command.argument.OptionalArgument;
+import io.github.romvoid95.command.argument.RequiredArgument;
+import io.github.romvoid95.menu.EmbedPaginator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.romvoid95.curseforge.CursedBot;

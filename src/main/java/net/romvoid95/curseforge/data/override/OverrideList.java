@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.romvoid95.curseforge.CursedBot;
+import net.romvoid95.curseforge.data.Data;
 import net.romvoid95.curseforge.data.FileLink;
+import net.romvoid95.curseforge.util.DiscordUtils;
+import net.romvoid95.curseforge.util.builder.DataClass;
 
 public class OverrideList {
 	
@@ -34,7 +39,7 @@ public class OverrideList {
 		return this;
 	}
 	
-	public static class ProjectOverride {
+	public static class ProjectOverride extends DataClass<ProjectOverride> {
 
 		private Integer id;
 		private String channel = "default";
@@ -82,14 +87,16 @@ public class OverrideList {
 		public String getDiscordFormat() {
 			return discordFormat;
 		}
-
-		@Override
-		public String toString() {
-			return String.format(
-					"ProjectOverride [id=%s, channel=%s, role=%s, fileLink=%s, description=%s, discordFormat=%s]", id,
-					channel, role, fileLink, description, discordFormat);
-		}
 		
+		@JsonIgnore
+		public TextChannel getOverridenChannel() {
+			if(getChannel().contentEquals("default")) {
+				return DiscordUtils.getChannel(Data.config().get().getDefaultChannel()).get();
+			} else {
+				return DiscordUtils.getChannel(getChannel()).get();
+			}
+		}
+
 		public List<String> verifyDiscordEntities() {
 			List<String> list = new LinkedList<>();
 			try {

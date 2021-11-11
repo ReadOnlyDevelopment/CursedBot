@@ -2,8 +2,7 @@ package net.romvoid95.curseforge.command;
 
 import java.util.concurrent.TimeUnit;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
-
+import io.github.romvoid95.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;

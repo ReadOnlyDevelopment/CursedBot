@@ -5,27 +5,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.LoggerFactory;
-
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.command.argument.CommandArgument;
-import com.jagrosh.jdautilities.command.argument.OptionalArgument;
-import com.jagrosh.jdautilities.command.argument.RequiredArgument;
-
-import ch.qos.logback.classic.Logger;
-import groovyjarjarantlr4.v4.misc.Utils;
+import io.github.romvoid95.command.Command;
+import io.github.romvoid95.command.CommandEvent;
+import io.github.romvoid95.command.argument.CommandArgument;
+import io.github.romvoid95.command.argument.OptionalArgument;
+import io.github.romvoid95.command.argument.RequiredArgument;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.romvoid95.curseforge.CursedBot;
 import net.romvoid95.curseforge.command.base.args.Argument;
 import net.romvoid95.curseforge.command.base.args.ArgumentIndex;
+import net.romvoid95.curseforge.util.DiscordUtils;
 
+@Log4j2
 public abstract class BaseCommand extends Command {
 
-	private static final Logger log = (Logger) LoggerFactory.getLogger(CursedBot.class);
-	
 	private ArgumentIndex argumentIndex;
 	private CommandEvent event;
 	private Message returnMsg;
@@ -39,7 +34,7 @@ public abstract class BaseCommand extends Command {
 	public void execute(CommandEvent event) {
 		this.argumentIndex = new ArgumentIndex(event);
 		this.event = event;
-		log.info("(CommandEvent) " + event.getAuthor().getAsTag() + " ran the " + Utils.capitalize(this.name) + " command");
+		log.info("(CommandEvent) " + event.getAuthor().getAsTag() + " ran the " + DiscordUtils.capitalize(this.name) + " command");
 		if(this.getArgCount() > 0) {
 			log.info("(CommandEvent) Invoked: [ " + this.name + " " + this.getArgsAsString() + " ]");
 		}
@@ -119,7 +114,7 @@ public abstract class BaseCommand extends Command {
 		List<RequiredArgument> requiredArguments = new ArrayList<>();
 		List<OptionalArgument> optionalArguments = new ArrayList<>();
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setTitle(Utils.capitalize(name + "Command"));
+		builder.setTitle(DiscordUtils.capitalize(name + "Command"));
 		builder.setDescription(this.getHelp());
 		StringBuilder b1 = new StringBuilder();
 		for(CommandArgument<?> arg : this.getArguments()) {

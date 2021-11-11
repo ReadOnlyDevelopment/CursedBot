@@ -14,11 +14,12 @@ import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.file.CurseFile;
 import com.therandomlabs.curseapi.project.CurseProject;
 
+import io.github.romvoid95.async.Async;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.interactions.components.Component;
-import net.rom.utility.async.Async;
+import net.romvoid95.curseforge.CursedBot;
 import net.romvoid95.curseforge.DataInterface;
 import net.romvoid95.curseforge.data.Data;
 import net.romvoid95.curseforge.data.FileLink;
@@ -30,11 +31,12 @@ import net.romvoid95.curseforge.util.Embed;
 
 public class UpdateThread {
 
+	private static final Logger LOG = LoggerFactory.getLogger(UpdateThread.class);
+
 	private ScheduledExecutorService service;
 	private int delay;
 	String THREAD_NAME;
 	List<Component> components;
-	private final Logger LOG;
 
 	private CurseProject proj;
 	private CurseFile newFile;
@@ -51,11 +53,10 @@ public class UpdateThread {
 
 	private final DataInterface INTERFACE = new DataInterface();
 
-	public UpdateThread(ProjectData projectData, int id, int delay) {
+	public UpdateThread(ProjectData projectData, int id, int delay){
 		THREAD_NAME = "UpdateThread-" + id;
 		this.delay = delay;
 		this.projectId = projectData.getProjectId();
-		LOG = (Logger) LoggerFactory.getLogger(THREAD_NAME);
 		getMessageData(projectId);
 
 		Optional<CurseProject> project;
@@ -67,37 +68,60 @@ public class UpdateThread {
 		} catch (CurseException e) {
 			e.printStackTrace();
 		}
+		
+		LOG.info(THREAD_NAME);
+		LOG.info("delay: " + this.delay);
+		LOG.info("projectId: " + this.projectId);
+		LOG.info("channel: " + this.channel.getName() + "(" + this.channel.getId() + ")");
+		if(CursedBot.developmentMode) {
+			LOG.info(" -> Overriden to DevChannel");
+		}
+		LOG.info("role: " + this.role);
+		if(CursedBot.developmentMode) {
+			LOG.info(" -> No mentions while in Development Mode");
+		}
+		LOG.info("filelink: " + this.filelink.name());
+		LOG.info("description: " + this.description);
+		LOG.info("format: " + this.format);
 	}
 
 	private void getMessageData(Integer projectId) {
 		Config config = Data.config().get();
 		ProjectOverride override = INTERFACE.findOverride(projectId);
-		
-		if(config.getDebug()) {
+		if (config.isDebug()) {
 			LOG.debug(override.toString());
-			for(String string : override.verifyDiscordEntities()) {
+			for (String string : override.verifyDiscordEntities()) {
 				LOG.debug(string);
 			}
 		}
-		
-		if (override.getChannel().equals("default")) {
-			Optional<TextChannel> optionalChannel = DiscordUtils.getChannel(config.getDefaultChannel());
-			if(optionalChannel.isPresent()) {
-				this.channel = optionalChannel.get();
-			} else {
-				LOG.error("The Channel ID for Project " + proj.name() + " Was not found by JDA!, Terminating Thread");
-				this.shutdown();
-			}
+		if(CursedBot.developmentMode) {
+			this.channel = DiscordUtils.getDevChannel(config.getDevChannel());
 		} else {
-			Optional<TextChannel> optionalChannel = DiscordUtils.getChannel(override.getChannel());
-			if(optionalChannel.isPresent()) {
-				this.channel = optionalChannel.get();
-			} else {
-				LOG.error("The Channel ID for Project " + proj.name() + " Was not found by JDA!, Terminating Thread");
-				this.shutdown();
-			}
+			this.channel = override.getOverridenChannel();
 		}
-		if(!override.getRole().equals("none") && !override.getRole().equals("none")) {
+		
+//		if (override.getChannel().equals("default")) {
+//			Optional<TextChannel> optionalChannel = DiscordUtils.getChannel(config.getDefaultChannel());
+//			if (optionalChannel.isPresent()) {
+//				this.channel = optionalChannel.get();
+//			} else {
+//				LOG.error("The Channel ID for Project " + proj.name() + " Was not found by JDA!, Terminating Thread");
+//				this.shutdown();
+//			}
+//		} else {
+//			if(Data.config().get().isDevelopmentMode()) {
+//				this.channel = DiscordUtils.getDevChannel(config.getDevChannel());
+//			} else {
+//				Optional<TextChannel> optionalChannel = DiscordUtils.getChannel(override.getChannel());
+//				if (optionalChannel.isPresent()) {
+//					this.channel = optionalChannel.get();
+//				} else {
+//					LOG.error("The Channel ID for Project " + proj.name() + " Was not found by JDA!, Terminating Thread");
+//					this.shutdown();
+//				}
+//			}
+//		}
+		if (!override.getRole().equals("none") && !override.getRole().equals("none")) {
 			if (override.getRole().equals("default")) {
 				this.role = DiscordUtils.getRole(config.getDefulatRole());
 			} else {
@@ -132,37 +156,39 @@ public class UpdateThread {
 	}
 
 	private synchronized void runCheck() {
+		LOG.info("Running AsyncTask runCheck() for " + THREAD_NAME);
 		try {
 			if (isNewFile()) {
 				LOG.info("New File Found for" + proj.name() + " [New File] = " + proj.files().first().id());
 				newFile = proj.files().first();
 				ProjectData data = new ProjectData(projectId, newFileId);
-				INTERFACE.updateFileId(data);
+				if(!CursedBot.developmentMode) {
+					INTERFACE.updateFileId(data);
+				}
 				EmbedBuilder builder;
+
 				switch (this.filelink) {
 				case DIRECT:
-					builder = Embed.directLinkEmbed(this.proj, this.newFile, this.channel, this.description,
-							this.format);
-					components = Embed.getDirectDownloadButtons(this.proj, this.newFile);
+					builder = Embed.directLinkEmbed(proj, newFile, channel, description, format);
+					components = Embed.getDirectDownloadButtons(proj, newFile);
 					break;
 				case CURSEFORGE:
-					builder = Embed.curseLinkEmbed(this.proj, this.newFile, this.channel, this.description,
-							this.format);
-					components = Embed.getCursePageButtons(this.proj);
+					builder = Embed.curseLinkEmbed(proj, newFile, channel, description, format);
+					components = Embed.getCursePageButtons(proj);
 					break;
 				default:
-					builder = Embed.noLinkEmbed(this.proj, this.newFile, this.channel, this.description, this.format);
+					builder = Embed.noLinkEmbed(proj, newFile, channel, description, format);
 					components = Collections.emptyList();
+					break;
 				}
-
 				if (this.role.isPresent()) {
-					this.channel.sendMessage(role.get().getAsMention()).queue();
+					if(!CursedBot.developmentMode) {
+						this.channel.sendMessage(role.get().getAsMention()).queue();
+					}
 					this.channel.sendMessageEmbeds(builder.build()).setActionRow(components).queue();
-
 				} else {
 					this.channel.sendMessageEmbeds(builder.build()).setActionRow(components).queue();
 				}
-
 				proj.refreshFiles();
 			}
 			LOG.info("runCheck() for " + proj.name() + "(" + projectId + ") completed");
@@ -172,12 +198,13 @@ public class UpdateThread {
 	}
 
 	public void run() {
-
-		
-		
 		this.service = Async.task(THREAD_NAME, () -> {
 			runCheck();
 		}, delay, 45, TimeUnit.SECONDS);
+	}
+	
+	public void checkThread() {
+		LOG.info("AsyncTask " + THREAD_NAME + " :" + (service.isTerminated() ? " TERMINATED" : "RUNNING"));
 	}
 
 	public void shutdown() {

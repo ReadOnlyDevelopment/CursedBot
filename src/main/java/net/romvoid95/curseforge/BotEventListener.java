@@ -3,7 +3,7 @@ package net.romvoid95.curseforge;
 import java.awt.Color;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.requests.restaction.RoleAction;
 
-@Slf4j
+@Log4j2
 public class BotEventListener implements EventListener {
 
 	@Override

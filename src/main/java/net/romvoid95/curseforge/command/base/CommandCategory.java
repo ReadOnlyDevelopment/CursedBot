@@ -1,6 +1,6 @@
 package net.romvoid95.curseforge.command.base;
 
-import com.jagrosh.jdautilities.command.Command.Category;
+import io.github.romvoid95.command.Command.Category;
 
 public final class CommandCategory {
 	public static final Category BOT_OWNER = new Category("Bot Owner");

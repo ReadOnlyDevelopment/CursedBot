@@ -2,14 +2,13 @@ package net.romvoid95.curseforge.core;
 
 import java.util.Objects;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandClient;
-import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import com.jagrosh.jdautilities.command.argument.CommandArgument;
-import com.jagrosh.jdautilities.command.argument.OptionalArgument;
-import com.jagrosh.jdautilities.command.argument.RequiredArgument;
-import com.jagrosh.jdautilities.command.Command.Category;
-
+import io.github.romvoid95.command.Command;
+import io.github.romvoid95.command.Command.Category;
+import io.github.romvoid95.command.CommandClient;
+import io.github.romvoid95.command.CommandClientBuilder;
+import io.github.romvoid95.command.argument.CommandArgument;
+import io.github.romvoid95.command.argument.OptionalArgument;
+import io.github.romvoid95.command.argument.RequiredArgument;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
 import net.romvoid95.curseforge.data.Data;

@@ -37,6 +37,10 @@ public class DiscordUtils {
 		return Optional.ofNullable(CursedBot.instance().getJda().getTextChannelById(id));
 	}
 	
+	public static TextChannel getDevChannel(String id) {
+		return getChannel(id).get();
+	}
+	
 	public static String capitalize(String input) {
 		if (input == null || input.isEmpty())
 			return "";

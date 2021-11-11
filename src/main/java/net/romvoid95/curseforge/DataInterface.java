@@ -12,12 +12,13 @@ import java.util.Optional;
 
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
+import com.therandomlabs.curseapi.file.CurseFile;
 import com.therandomlabs.curseapi.project.CurseProject;
 
-import lombok.extern.slf4j.Slf4j;
+import io.github.romvoid95.system.OS;
+import io.github.romvoid95.system.SystemPlatform;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.rom.utility.system.OS;
-import net.rom.utility.system.SystemPlatform;
 import net.romvoid95.curseforge.async.CurrentThreads;
 import net.romvoid95.curseforge.data.Data;
 import net.romvoid95.curseforge.data.cache.Cache.ProjectData;
@@ -26,9 +27,8 @@ import net.romvoid95.curseforge.data.override.OverrideList.ProjectOverride;
 import net.romvoid95.curseforge.io.FileIO;
 import net.romvoid95.curseforge.io.JsonDataManager;
 
-@Slf4j
+@Log4j2
 public class DataInterface {
-
 	private static DataInterface _instance;
 	public static Path data;
 	private List<Integer> projectList;
@@ -66,6 +66,12 @@ public class DataInterface {
 		for (ProjectData d : list) {
 			if (projectData.getProjectId().equals(d.getProjectId())) {
 				try {
+					CurseProject project = getCurseProject(d.getProjectId());
+					CurseFile file = getCurseProject(projectData.getProjectId()).files().first();
+					log.info("[" + project.name() + "]");
+					log.info("CacheFile: " + d.getFileId());
+					log.info("FirstFile: " + file.id());
+					
 					d.setFileId(getCurseProject(projectData.getProjectId()).files().first().id());
 				} catch (CurseException e) {
 					e.printStackTrace();

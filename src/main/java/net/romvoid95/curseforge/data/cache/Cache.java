@@ -3,6 +3,8 @@ package net.romvoid95.curseforge.data.cache;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.romvoid95.curseforge.util.builder.DataClass;
+
 public class Cache {
 	private List<ProjectData> cache = new ArrayList<ProjectData>();
 
@@ -27,7 +29,7 @@ public class Cache {
 		return this;
 	}
 	
-	public static class ProjectData {
+	public static class ProjectData extends DataClass<ProjectData> {
 		
 		private Integer projectId;
 		private Integer fileId;

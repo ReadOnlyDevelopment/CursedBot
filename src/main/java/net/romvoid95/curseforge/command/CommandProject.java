@@ -3,12 +3,12 @@ package net.romvoid95.curseforge.command;
 import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.command.argument.RequiredArgument;
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
 
+import io.github.romvoid95.command.CommandEvent;
+import io.github.romvoid95.command.argument.RequiredArgument;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.romvoid95.curseforge.DataInterface;
 import net.romvoid95.curseforge.command.base.BaseCommand;

@@ -4,8 +4,8 @@ import java.util.EnumSet;
 
 import javax.security.auth.login.LoginException;
 
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-
+import io.github.furstenheim.CopyDown;
+import io.github.romvoid95.common.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -21,6 +21,8 @@ public class CursedBot {
 	private JDA jda;
 	private CurrentThreads currentThreads;
 	public static final EventWaiter eventWaiter = new EventWaiter();
+	
+	public static boolean developmentMode = Data.config().get().isDevelopmentMode();
 
 	public static CursedBot instance() {
 		if (_instance != null) {
@@ -65,8 +67,9 @@ public class CursedBot {
 				_instance.getJda().getPresence().setActivity(Activity.playing("Checking for Updates!"));
 				
 				DataInterface.instance().setup();
+				CurrentThreads threads = new CurrentThreads(Data.cache().get());
 				
-				_instance.setCurrentThreads(new CurrentThreads(Data.cache().get()));
+				_instance.setCurrentThreads(threads);
 				_instance.setRuns();
 			}
 		} catch (LoginException | InterruptedException e) {
@@ -74,10 +77,6 @@ public class CursedBot {
 		}
 	}
 
-
-
-	
-	
 	public void setRuns() {
 		getCurrentThreads().runThreads();
 	}

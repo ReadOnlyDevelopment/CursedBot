@@ -5,9 +5,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.command.argument.OptionalArgument;
-
+import io.github.romvoid95.command.CommandEvent;
+import io.github.romvoid95.command.argument.OptionalArgument;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.ApplicationInfo;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
+import io.github.romvoid95.command.CommandEvent;
 
 public class ArgumentIndex {
 

@@ -2,16 +2,18 @@ plugins {
 	id 'java'
 	id 'application'
 	id 'se.patrikerdes.use-latest-versions' version '0.2.17'
-	id "com.github.johnrengelman.shadow" version "7.0.0"
+	id "com.github.johnrengelman.shadow" version "7.1.0"
 	id "com.github.ben-manes.versions" version "0.39.0"
 }
+
+defaultTasks 'shadowJar'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 version = '2.0.0'
 group = "net.romvoid95.curseforge"
-mainClassName = 'net.romvoid95.curseforge.CurseForgeBot'
+mainClassName = 'net.romvoid95.curseforge.CursedBot'
 
 String appName = 'cursedbot'
 
@@ -19,7 +21,7 @@ repositories {
 	mavenCentral()
 	maven { url 'https://m2.dv8tion.net/releases' }
     maven { url 'https://jitpack.io' }
-	mavenLocal()
+	maven { url 'https://maven.readonlydev.com'}
 }
 
 ext {
@@ -33,25 +35,35 @@ ext {
 }
 
 dependencies {
-	implementation("net.dv8tion:JDA:4.3.0_324") {
+	implementation("net.dv8tion:JDA:4.3.0_346") {
+		transitive = true
 		exclude group: 'opus-java'
-		exclude group: 'org.slf4j'
 	}
-	implementation("com.github.ROMVoid95:CurseAPI:1.0.3") {
-		exclude group: 'org.slf4j'
+	implementation("com.therandomlabs.curseapi:CurseAPI:1.0.4") {
+		transitive = true
 	}
-	implementation("com.github.ROMVoid95:JavaUtilities:3.0.2") {
-		exclude group: 'org.slf4j'
+	implementation("io.github.romvoid95:java-utilities:3.1.0") {
+		transitive = true
 	}
-	implementation("pw.chew:jda-chewtils:1.0.3") {
-		exclude group: 'org.slf4j'
+	implementation("io.github.romvoid95:jdatools:1.24.3") {
+		transitive = true
 	}
+	
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.1'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.14.1'
+	implementation group: 'org.jline', name: 'jline', version: '3.21.0'
+	
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	implementation 'es.nitaur.markdown:txtmark:0.16'
+	implementation 'io.github.furstenheim:copy_down:1.0'
+	
 	implementation group: 'org.codehaus.groovy', 		name: 'groovy-jsr223', 		version: jsrVersion
 	implementation group: 'org.reflections', 			name: 'reflections', 		version: reflectionsVersion
-	implementation group: 'ch.qos.logback', 			name: 'logback-classic', 	version: logbackVersion
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', 		version: jacksonVersion
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', 	version: jacksonVersion
 	implementation group: 'com.google.guava', 			name: 'guava', 				version: guavaVersion
+	
 	compileOnly group: 'org.projectlombok', 			name: 'lombok', 			version: lombokVersion
 	annotationProcessor group: 'org.projectlombok', 	name: 'lombok', 			version: lombokVersion
 	testCompileOnly group: 'org.projectlombok', 		name: 'lombok', 			version: lombokVersion
@@ -65,3 +77,12 @@ tasks.withType(JavaCompile) {
 	options.incremental = true
 }
 
+shadowJar {
+	archiveClassifier.set('')
+}
+
+task rmJar(type: Delete) {
+	delete jar
+}
+
+//tasks.named("build") { finalizedBy("rmJar") }
