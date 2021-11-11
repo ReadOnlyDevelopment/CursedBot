@@ -79,7 +79,6 @@ tasks.withType(JavaCompile) {
 
 shadowJar {
 	archiveClassifier.set('')
-	archiveVersion.set('')
 }
 
 task rmJar(type: Delete) {
